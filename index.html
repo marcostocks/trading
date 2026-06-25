@@ -5783,7 +5783,6 @@ img { max-width: 100%; }
       <div class="dash-filters">
         <div class="dash-pills" id="dashPills">
           <button class="dash-pill active" data-cat="all">All Stocks</button>
-          <button class="dash-pill" data-cat="us">US Stocks</button>
           <button class="dash-pill" data-cat="ai">AI & LLMs</button>
           <button class="dash-pill" data-cat="glp1">Biotech</button>
           <button class="dash-pill" data-cat="ev">EV</button>
@@ -5793,7 +5792,6 @@ img { max-width: 100%; }
           <button class="dash-pill" data-cat="financials">Financials</button>
           <button class="dash-pill" data-cat="crypto">Crypto</button>
           <button class="dash-pill" data-cat="forex">Forex</button>
-          <button class="dash-pill" data-cat="commodities">Commodities</button>
         </div>
         <input type="text" class="dash-search" id="dashSearch" placeholder="Filter by name or ticker...">
       </div>
@@ -5895,43 +5893,8 @@ img { max-width: 100%; }
 
 <!-- ═══════════════════ PRE-IPO PIPELINE PAGE ═══════════════════ -->
 <div id="page-pre-ipo" class="page">
-  <div class="preipo-page">
-    <div class="container">
-      <div class="preipo-page-header">
-        <h1>Pre-IPO Pipeline</h1>
-        <p>Get exposure to the hottest Chinese companies before they list. Deposit USDC, broker subscribes, shares delivered on-chain.</p>
-      </div>
-
-      <!-- Pre-IPO Hero Capsule -->
-      <div class="preipo-hero" id="preIpoHero">
-        <!-- JS fills: featured IPO with countdown + allocation bar -->
-      </div>
-
-      <div class="preipo-upcoming-section">
-        <h2>Upcoming IPOs</h2>
-        <p class="preipo-upcoming-sub">Pre-IPO companies we're tracking. Get exposure before they list.</p>
-        <div class="preipo-upcoming-grid" id="preIpoUpcomingGrid">
-          <!-- JS fills this -->
-        </div>
-      </div>
-
-      <div class="preipo-table-section">
-        <h2>Recent HK IPO Performance</h2>
-        <div class="preipo-table-wrap">
-          <table class="preipo-table" id="preIpoTable">
-            <!-- JS fills this -->
-          </table>
-        </div>
-      </div>
-
-      <div class="preipo-sector-breakdown">
-        <h2>IPO Pipeline by Sector</h2>
-        <div class="preipo-bars" id="preIpoBars">
-          <!-- JS fills this -->
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Pre-IPO section now embeds the standalone Pre-IPO Vaults app (obsidian-vaults.html) -->
+  <iframe id="preIpoVaultsFrame" class="preipo-embed" title="Pre-IPO Vaults" style="display:block;width:100%;height:calc(100vh - 48px);margin-top:48px;border:0;"></iframe>
 </div>
 
 <!-- ═══════════════════ PORTFOLIO PAGE ═══════════════════ -->
@@ -5981,7 +5944,6 @@ img { max-width: 100%; }
           <div class="trade-ticker-tabs" id="tradeTickerTabs">
             <button class="trade-ticker-tab active" data-cat="all">ALL</button>
             <button class="trade-ticker-tab" data-cat="china">CHINA</button>
-            <button class="trade-ticker-tab" data-cat="us">US</button>
             <button class="trade-ticker-tab" data-cat="crypto">CRYPTO</button>
             <button class="trade-ticker-tab" data-cat="forex">FOREX</button>
           </div>
@@ -6335,10 +6297,8 @@ img { max-width: 100%; }
           <div class="trade-ticker-tabs" id="spotTickerTabs">
             <button class="trade-ticker-tab active" data-cat="all">ALL</button>
             <button class="trade-ticker-tab" data-cat="china">CHINA</button>
-            <button class="trade-ticker-tab" data-cat="us">US</button>
             <button class="trade-ticker-tab" data-cat="crypto">CRYPTO</button>
             <button class="trade-ticker-tab" data-cat="forex">FOREX</button>
-            <button class="trade-ticker-tab" data-cat="commodities">CMDTY</button>
           </div>
           <div class="trade-ticker-list" id="spotTickerList"></div>
         </div>
@@ -6620,15 +6580,15 @@ img { max-width: 100%; }
     // ── AI & LLMs (5) ──
     {
       name: 'Zhipu AI',
-      ticker: 'GCL-USDC',
+      ticker: 'ZHIPU-USDC',
       sector: 'AI & LLMs',
       sectorSlug: 'ai',
       oneLiner: 'The company behind GLM-5, China\'s leading open-source large language model',
       marketCap: '$180B',
       ipoDate: 'Jan 8, 2026',
       ipoPrice: '$52',
-      currentPrice: '$510.50',
-      change24h: '+6.78%',
+      currentPrice: '$268.46',
+      change24h: '+26.14%',
       change7d: '+18.2%',
       change30d: '+32.5%',
       changeUp: true,
@@ -6669,15 +6629,15 @@ img { max-width: 100%; }
     },
     {
       name: 'MiniMax',
-      ticker: 'JKS-USDC',
+      ticker: 'MINIMAX-USDC',
       sector: 'AI & LLMs',
       sectorSlug: 'ai',
       oneLiner: 'Multimodal AI lab behind Hailuo, China\'s most-used AI video generator',
       marketCap: '$95B',
       ipoDate: 'Mar 25, 2026',
       ipoPrice: '$32',
-      currentPrice: '$136.40',
-      change24h: '+4.52%',
+      currentPrice: '$74.10',
+      change24h: '+12.30%',
       change7d: '+12.8%',
       change30d: '+22.1%',
       changeUp: true,
@@ -6716,18 +6676,18 @@ img { max-width: 100%; }
     },
     {
       name: 'Biren Technology',
-      ticker: 'SHEC-USDC',
+      ticker: 'BIREN-USDC',
       sector: 'AI & LLMs',
       sectorSlug: 'ai',
       oneLiner: 'China\'s leading GPU designer, building the chips that train Chinese AI models',
       marketCap: '$68B',
       ipoDate: 'Nov 15, 2025',
       ipoPrice: '$28',
-      currentPrice: '$62',
-      change24h: '+3.21%',
+      currentPrice: '$7.73',
+      change24h: '-3.09%',
       change7d: '+8.4%',
       change30d: '+15.7%',
-      changeUp: true,
+      changeUp: false,
       volume: '$2.8B',
       comparable: ['NVIDIA', 'AMD', 'Cambricon'],
       maxLeverage: '3x',
@@ -6770,11 +6730,11 @@ img { max-width: 100%; }
       marketCap: '$280B',
       ipoDate: 'Mar 23, 2021',
       ipoPrice: '$252',
-      currentPrice: '$96.45',
-      change24h: '+6.78%',
+      currentPrice: '$14.19',
+      change24h: '-2.50%',
       change7d: '+9.1%',
       change30d: '+14.3%',
-      changeUp: true,
+      changeUp: false,
       volume: '$3.5B',
       comparable: ['Google', 'Microsoft', 'OpenAI'],
       maxLeverage: '10x',
@@ -6810,15 +6770,15 @@ img { max-width: 100%; }
     },
     {
       name: 'SenseTime',
-      ticker: 'SNET-USDC',
+      ticker: 'SENSETIME-USDC',
       sector: 'AI & LLMs',
       sectorSlug: 'ai',
       oneLiner: 'China\'s largest pure-play AI company, focused on computer vision and generative AI',
       marketCap: '$52B',
       ipoDate: 'Dec 30, 2021',
       ipoPrice: '$3.85',
-      currentPrice: '$1.58',
-      change24h: '+2.61%',
+      currentPrice: '$0.19',
+      change24h: '+3.45%',
       change7d: '+5.3%',
       change30d: '+11.8%',
       changeUp: true,
@@ -6859,18 +6819,18 @@ img { max-width: 100%; }
     // ── Peptides & GLP-1 (6) ──
     {
       name: 'Innovent Biologics',
-      ticker: 'IVBT-USDC',
+      ticker: 'INNOVENT-USDC',
       sector: 'GLP-1 & Peptides',
       sectorSlug: 'glp1',
       oneLiner: 'China\'s top biotech, partnered with Eli Lilly on next-gen obesity and cancer drugs',
       marketCap: '$145B',
       ipoDate: 'Oct 31, 2018',
       ipoPrice: '$13.98',
-      currentPrice: '$52.30',
-      change24h: '+8.14%',
+      currentPrice: '$9.47',
+      change24h: '-3.02%',
       change7d: '+12.5%',
       change30d: '+28.3%',
-      changeUp: true,
+      changeUp: false,
       volume: '$3.2B',
       comparable: ['Eli Lilly', 'Novo Nordisk', 'BeiGene'],
       maxLeverage: '10x',
@@ -6906,18 +6866,18 @@ img { max-width: 100%; }
     },
     {
       name: 'Hansoh Pharma',
-      ticker: 'HNSO-USDC',
+      ticker: 'HANSOH-USDC',
       sector: 'GLP-1 & Peptides',
       sectorSlug: 'glp1',
       oneLiner: 'Fast-growing biotech with $4B+ in global licensing deals for GLP-1 and oncology drugs',
       marketCap: '$110B',
       ipoDate: 'Jun 14, 2019',
       ipoPrice: '$14.26',
-      currentPrice: '$24.65',
-      change24h: '+12.3%',
+      currentPrice: '$3.79',
+      change24h: '-1.40%',
       change7d: '+18.7%',
       change30d: '+35.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$2.8B',
       comparable: ['Viking Therapeutics', 'Structure Therapeutics', 'Zealand'],
       maxLeverage: '5x',
@@ -6953,18 +6913,18 @@ img { max-width: 100%; }
     },
     {
       name: 'United Laboratories',
-      ticker: 'UIMG-USDC',
+      ticker: 'UNITEDLAB-USDC',
       sector: 'GLP-1 & Peptides',
       sectorSlug: 'glp1',
       oneLiner: 'Pharma manufacturer that pivoted to peptide drugs, signed a $2B deal with Novo Nordisk',
       marketCap: '$42B',
       ipoDate: 'Jun 28, 2007',
       ipoPrice: '$4.22',
-      currentPrice: '$12.88',
-      change24h: '+5.42%',
+      currentPrice: '$1.03',
+      change24h: '-3.02%',
       change7d: '+11.3%',
       change30d: '+24.8%',
-      changeUp: true,
+      changeUp: false,
       volume: '$1.1B',
       comparable: ['Novo Nordisk', 'Bachem', 'CordenPharma'],
       maxLeverage: '5x',
@@ -7007,8 +6967,8 @@ img { max-width: 100%; }
       marketCap: '$210B',
       ipoDate: 'Dec 13, 2018',
       ipoPrice: '$68',
-      currentPrice: '$72.50',
-      change24h: '+3.18%',
+      currentPrice: '$16.51',
+      change24h: '+0.08%',
       change7d: '+6.2%',
       change30d: '+8.9%',
       changeUp: true,
@@ -7047,15 +7007,15 @@ img { max-width: 100%; }
     },
     {
       name: 'Innogen',
-      ticker: 'KLBT-USDC',
+      ticker: 'INNOGEN-USDC',
       sector: 'GLP-1 & Peptides',
       sectorSlug: 'glp1',
       oneLiner: 'Small-cap biotech that exploded 296% on IPO day with a novel GLP-1 drug candidate',
       marketCap: '$8.5B',
       ipoDate: 'Feb 14, 2026',
       ipoPrice: '$2.80',
-      currentPrice: '$11.10',
-      change24h: '+4.82%',
+      currentPrice: '$0.98',
+      change24h: '+1.46%',
       change7d: '+9.1%',
       change30d: '+18.5%',
       changeUp: true,
@@ -7094,18 +7054,18 @@ img { max-width: 100%; }
     },
     {
       name: 'PegBio',
-      ticker: 'PGBO-USDC',
+      ticker: 'PEGBIO-USDC',
       sector: 'GLP-1 & Peptides',
       sectorSlug: 'glp1',
       oneLiner: 'PEGylation biotech with a long-acting GLP-1 that could be once-monthly dosing',
       marketCap: '$12B',
       ipoDate: 'Sep 28, 2025',
       ipoPrice: '$15.80',
-      currentPrice: '$28.50',
-      change24h: '+3.95%',
+      currentPrice: '$0.76',
+      change24h: '-3.26%',
       change7d: '+7.8%',
       change30d: '+15.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$420M',
       comparable: ['Novo Nordisk', 'Amgen', 'Roche'],
       maxLeverage: '3x',
@@ -7150,11 +7110,11 @@ img { max-width: 100%; }
       marketCap: '$980B',
       ipoDate: 'Jul 31, 2002',
       ipoPrice: '$10.95',
-      currentPrice: '$318.40',
-      change24h: '+5.17%',
+      currentPrice: '$9.96',
+      change24h: '-3.90%',
       change7d: '+8.3%',
       change30d: '+12.6%',
-      changeUp: true,
+      changeUp: false,
       volume: '$6.8B',
       comparable: ['Tesla', 'Toyota', 'Volkswagen'],
       maxLeverage: '20x',
@@ -7197,11 +7157,11 @@ img { max-width: 100%; }
       marketCap: '$720B',
       ipoDate: 'Jul 9, 2018',
       ipoPrice: '$17',
-      currentPrice: '$58.25',
-      change24h: '+2.89%',
+      currentPrice: '$3.05',
+      change24h: '-3.34%',
       change7d: '+5.6%',
       change30d: '+9.8%',
-      changeUp: true,
+      changeUp: false,
       volume: '$5.2B',
       comparable: ['Apple', 'Tesla', 'Samsung'],
       maxLeverage: '15x',
@@ -7244,11 +7204,11 @@ img { max-width: 100%; }
       marketCap: '$165B',
       ipoDate: 'Jul 7, 2021',
       ipoPrice: '$165',
-      currentPrice: '$72.80',
-      change24h: '+4.35%',
+      currentPrice: '$6.33',
+      change24h: '-4.08%',
       change7d: '+11.2%',
       change30d: '+22.5%',
-      changeUp: true,
+      changeUp: false,
       volume: '$2.1B',
       comparable: ['Tesla', 'Rivian', 'Lucid'],
       maxLeverage: '10x',
@@ -7291,11 +7251,11 @@ img { max-width: 100%; }
       marketCap: '$250B',
       ipoDate: 'Aug 12, 2021',
       ipoPrice: '$118',
-      currentPrice: '$118.90',
-      change24h: '+3.55%',
+      currentPrice: '$6.46',
+      change24h: '-3.17%',
       change7d: '+6.8%',
       change30d: '+10.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$3.4B',
       comparable: ['Tesla', 'BMW', 'Mercedes'],
       maxLeverage: '15x',
@@ -7338,8 +7298,8 @@ img { max-width: 100%; }
       marketCap: '$130B',
       ipoDate: 'Mar 10, 2022',
       ipoPrice: '$160',
-      currentPrice: '$48.70',
-      change24h: '-2.31%',
+      currentPrice: '$5.06',
+      change24h: '-3.33%',
       change7d: '+3.2%',
       change30d: '+8.5%',
       changeUp: false,
@@ -7387,8 +7347,8 @@ img { max-width: 100%; }
       marketCap: '$280B',
       ipoDate: 'Mar 18, 2004',
       ipoPrice: '$2.69',
-      currentPrice: '$34.50',
-      change24h: '+4.92%',
+      currentPrice: '$9.81',
+      change24h: '+0.99%',
       change7d: '+7.8%',
       change30d: '+14.3%',
       changeUp: true,
@@ -7434,11 +7394,11 @@ img { max-width: 100%; }
       marketCap: '$85B',
       ipoDate: 'Oct 15, 2014',
       ipoPrice: '$11.25',
-      currentPrice: '$28.20',
-      change24h: '+2.85%',
+      currentPrice: '$18.71',
+      change24h: '-0.55%',
       change7d: '+5.4%',
       change30d: '+11.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$1.2B',
       comparable: ['TSMC', 'Tower Semiconductor', 'Vanguard'],
       maxLeverage: '5x',
@@ -7481,8 +7441,8 @@ img { max-width: 100%; }
       marketCap: '$55B',
       ipoDate: 'Dec 8, 1989',
       ipoPrice: '$1.18',
-      currentPrice: '$88.50',
-      change24h: '+1.95%',
+      currentPrice: '$25.19',
+      change24h: '+1.08%',
       change7d: '+4.2%',
       change30d: '+8.8%',
       changeUp: true,
@@ -7530,11 +7490,11 @@ img { max-width: 100%; }
       marketCap: '$3.8T',
       ipoDate: 'Jun 16, 2004',
       ipoPrice: '$3.70',
-      currentPrice: '$510.50',
-      change24h: '+3.24%',
+      currentPrice: '$55.87',
+      change24h: '-1.00%',
       change7d: '+5.1%',
       change30d: '+8.5%',
-      changeUp: true,
+      changeUp: false,
       volume: '$12.5B',
       comparable: ['Meta', 'Apple', 'Alphabet'],
       maxLeverage: '20x',
@@ -7577,8 +7537,8 @@ img { max-width: 100%; }
       marketCap: '$1.7T',
       ipoDate: 'Nov 26, 2019',
       ipoPrice: '$176',
-      currentPrice: '$136.40',
-      change24h: '-1.42%',
+      currentPrice: '$13.12',
+      change24h: '-2.48%',
       change7d: '+2.8%',
       change30d: '+6.5%',
       changeUp: false,
@@ -7624,11 +7584,11 @@ img { max-width: 100%; }
       marketCap: '$920B',
       ipoDate: 'Sep 20, 2018',
       ipoPrice: '$69',
-      currentPrice: '$156.30',
-      change24h: '+4.12%',
+      currentPrice: '$9.04',
+      change24h: '-1.74%',
       change7d: '+7.5%',
       change30d: '+13.8%',
-      changeUp: true,
+      changeUp: false,
       volume: '$5.5B',
       comparable: ['DoorDash', 'Uber Eats', 'Booking.com'],
       maxLeverage: '15x',
@@ -7671,11 +7631,11 @@ img { max-width: 100%; }
       marketCap: '$420B',
       ipoDate: 'Jun 18, 2020',
       ipoPrice: '$226',
-      currentPrice: '$142.80',
-      change24h: '+1.63%',
+      currentPrice: '$14.53',
+      change24h: '-0.18%',
       change7d: '+3.5%',
       change30d: '+7.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$3.8B',
       comparable: ['Amazon', 'Costco', 'Walmart'],
       maxLeverage: '15x',
@@ -7720,11 +7680,11 @@ img { max-width: 100%; }
       marketCap: '$165B',
       ipoDate: 'Dec 11, 2020',
       ipoPrice: '$38.50',
-      currentPrice: '$115.80',
-      change24h: '+3.85%',
+      currentPrice: '$21.06',
+      change24h: '-4.09%',
       change7d: '+8.2%',
       change30d: '+18.5%',
-      changeUp: true,
+      changeUp: false,
       volume: '$2.2B',
       comparable: ['Funko', 'Bandai Namco', 'LEGO'],
       maxLeverage: '5x',
@@ -7767,11 +7727,11 @@ img { max-width: 100%; }
       marketCap: '$310B',
       ipoDate: 'Jul 10, 2007',
       ipoPrice: '$4.28',
-      currentPrice: '$92.50',
-      change24h: '+2.15%',
+      currentPrice: '$9.11',
+      change24h: '-1.46%',
       change7d: '+4.8%',
       change30d: '+9.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$1.8B',
       comparable: ['Nike', 'Adidas', 'Lululemon'],
       maxLeverage: '5x',
@@ -7816,11 +7776,11 @@ img { max-width: 100%; }
       marketCap: '$1.8T',
       ipoDate: 'Oct 27, 2006',
       ipoPrice: '$3.07',
-      currentPrice: '$5.28',
-      change24h: '+0.95%',
+      currentPrice: '$0.90',
+      change24h: '-2.09%',
       change7d: '+2.1%',
       change30d: '+4.5%',
-      changeUp: true,
+      changeUp: false,
       volume: '$3.2B',
       comparable: ['JPMorgan', 'HSBC', 'Bank of America'],
       maxLeverage: '15x',
@@ -7863,11 +7823,11 @@ img { max-width: 100%; }
       marketCap: '$850B',
       ipoDate: 'Mar 1, 2004',
       ipoPrice: '$10.33',
-      currentPrice: '$46.85',
-      change24h: '+1.78%',
+      currentPrice: '$6.90',
+      change24h: '-4.01%',
       change7d: '+3.5%',
       change30d: '+7.2%',
-      changeUp: true,
+      changeUp: false,
       volume: '$4.5B',
       comparable: ['AIG', 'Prudential', 'AXA'],
       maxLeverage: '10x',
@@ -7912,11 +7872,11 @@ img { max-width: 100%; }
       marketCap: '$2.1T',
       ipoDate: 'Oct 23, 1997',
       ipoPrice: '$11.68',
-      currentPrice: '$82.50',
-      change24h: '+1.22%',
+      currentPrice: '$10.12',
+      change24h: '-1.50%',
       change7d: '+2.5%',
       change30d: '+5.8%',
-      changeUp: true,
+      changeUp: false,
       volume: '$2.8B',
       comparable: ['AT&T', 'Verizon', 'Vodafone'],
       maxLeverage: '15x',
@@ -7959,11 +7919,11 @@ img { max-width: 100%; }
       marketCap: '$1.4T',
       ipoDate: 'Apr 7, 2000',
       ipoPrice: '$1.27',
-      currentPrice: '$7.85',
-      change24h: '+0.77%',
+      currentPrice: '$1.51',
+      change24h: '-2.08%',
       change7d: '+1.8%',
       change30d: '+3.5%',
-      changeUp: true,
+      changeUp: false,
       volume: '$2.2B',
       comparable: ['ExxonMobil', 'Shell', 'Saudi Aramco'],
       maxLeverage: '10x',
@@ -8001,18 +7961,18 @@ img { max-width: 100%; }
     // ── Robotics (1) ──
     {
       name: 'Horizon Robotics',
-      ticker: 'HRZN-USDC',
+      ticker: 'HORIZON-USDC',
       sector: 'Robotics',
       sectorSlug: 'robotics',
       oneLiner: 'China\'s leading autonomous driving chip company, powering 25+ automakers',
       marketCap: '$120B',
       ipoDate: 'Oct 24, 2024',
       ipoPrice: '$3.99',
-      currentPrice: '$28.80',
-      change24h: '+5.22%',
+      currentPrice: '$0.54',
+      change24h: '-3.42%',
       change7d: '+14.5%',
       change30d: '+28.8%',
-      changeUp: true,
+      changeUp: false,
       volume: '$3.5B',
       comparable: ['Mobileye', 'Qualcomm', 'NVIDIA Drive'],
       maxLeverage: '3x',
@@ -9118,39 +9078,41 @@ img { max-width: 100%; }
     }
   ];
 
+  // Trade section shows Chinese equities only — remove US-listed equities
+  (function removeUsEquities() {
+    for (let i = companiesData.length - 1; i >= 0; i--) {
+      if (companiesData[i].category === 'us' || companiesData[i].category === 'commodities') companiesData.splice(i, 1);
+    }
+  })();
+
   // ── Landing page data (keep existing) ──
   const tickerData = [
-    { name: 'Tencent', code: 'TCEHY-USDC', price: '510.50', change: '+3.24%', up: true },
-    { name: 'BYD', code: 'BYDDY-USDC', price: '318.40', change: '+5.17%', up: true },
-    { name: 'Xiaomi', code: 'XIACF-USDC', price: '58.25', change: '+2.89%', up: true },
-    { name: 'Alibaba', code: 'BABA-USDC', price: '136.40', change: '+0.44%', up: true },
-    { name: 'Meituan', code: 'MPNGY-USDC', price: '156.30', change: '+4.12%', up: true },
-    { name: 'JD.com', code: 'JD-USDC', price: '142.80', change: '+1.63%', up: true },
-    { name: 'NIO', code: 'NIO-USDC', price: '48.70', change: '-2.31%', up: false },
-    { name: 'Baidu', code: 'BIDU-USDC', price: '96.45', change: '+6.78%', up: true },
-    { name: 'Innovent', code: 'IVBT-USDC', price: '52.30', change: '+8.14%', up: true },
-    { name: 'Hansoh', code: 'HNSO-USDC', price: '24.65', change: '+12.3%', up: true },
-    { name: 'Li Auto', code: 'LI-USDC', price: '118.90', change: '+3.55%', up: true },
-    { name: 'Netease', code: 'NTES-USDC', price: '168.20', change: '+1.08%', up: true },
-    { name: 'SMIC', code: 'SMICY-USDC', price: '34.50', change: '+4.92%', up: true },
-    { name: 'Geely', code: 'GELYY-USDC', price: '17.88', change: '+2.14%', up: true },
-    { name: 'PDD', code: 'PDD-USDC', price: '124.55', change: '-0.87%', up: false },
-    { name: 'Brent', code: 'BRENT-USDC', price: '72.45', change: '+1.82%', up: true },
-    { name: 'WTI', code: 'WTI-USDC', price: '68.90', change: '+1.54%', up: true },
-    { name: 'BORE.OIL', code: 'BORE.OIL-USDC', price: '70.68', change: '+2.14%', up: true },
-    { name: 'Gold', code: 'GOLD-USDC', price: '2348.50', change: '+0.42%', up: true },
-    { name: 'Silver', code: 'SILVER-USDC', price: '31.20', change: '+0.88%', up: true },
+    { name: 'Tencent', code: 'TCEHY-USDC', price: '55.87', change: '-1.00%', up: false },
+    { name: 'BYD', code: 'BYDDY-USDC', price: '9.96', change: '-3.90%', up: false },
+    { name: 'Xiaomi', code: 'XIACF-USDC', price: '3.05', change: '-3.34%', up: false },
+    { name: 'Alibaba', code: 'BABA-USDC', price: '13.12', change: '-2.48%', up: false },
+    { name: 'Meituan', code: 'MPNGY-USDC', price: '9.04', change: '-1.74%', up: false },
+    { name: 'JD.com', code: 'JD-USDC', price: '14.53', change: '-0.18%', up: false },
+    { name: 'NIO', code: 'NIO-USDC', price: '5.06', change: '-3.33%', up: false },
+    { name: 'Baidu', code: 'BIDU-USDC', price: '14.19', change: '-2.50%', up: false },
+    { name: 'Innovent', code: 'INNOVENT-USDC', price: '9.47', change: '-3.02%', up: false },
+    { name: 'Hansoh', code: 'HANSOH-USDC', price: '3.79', change: '-1.40%', up: false },
+    { name: 'Li Auto', code: 'LI-USDC', price: '6.46', change: '-3.17%', up: false },
+    { name: 'Netease', code: 'NTES-USDC', price: '24.92', change: '+1.08%', up: true },
+    { name: 'SMIC', code: 'SMICY-USDC', price: '9.81', change: '+0.99%', up: true },
+    { name: 'Geely', code: 'GELYY-USDC', price: '2.38', change: '-2.36%', up: false },
+    { name: 'PDD', code: 'PDD-USDC', price: '85.07', change: '-0.87%', up: false },
   ];
 
   const landingMarketsData = [
-    { name: 'BYD', ticker: 'BYDDY-USDC', sector: 'EV', desc: 'Outselling Tesla globally. EV + battery vertical integration.', price: '$318.40', change: '+5.17%', up: true },
-    { name: 'SMIC', ticker: 'SMICY-USDC', sector: 'Semis', desc: 'China\'s largest chip foundry. 7nm capable despite sanctions.', price: '$34.50', change: '+4.92%', up: true },
-    { name: 'Meituan', ticker: 'MPNGY-USDC', sector: 'Consumer', desc: 'China\'s everything app. Food delivery, travel, payments.', price: '$156.30', change: '+4.12%', up: true },
-    { name: 'Tencent', ticker: 'TCEHY-USDC', sector: 'Tech', desc: 'WeChat. Gaming. Cloud. Fintech. 1.3B users.', price: '$510.50', change: '+3.24%', up: true },
-    { name: 'Ping An', ticker: 'PNGAY-USDC', sector: 'Finance', desc: 'China\'s largest insurer. $1.2T AUM. AI-driven underwriting.', price: '$46.85', change: '+1.78%', up: true },
-    { name: 'Xiaomi', ticker: 'XIACF-USDC', sector: 'Consumer', desc: 'Phones, smart home, and now EVs. SU7 is a hit.', price: '$58.25', change: '+2.89%', up: true },
-    { name: 'Li Auto', ticker: 'LI-USDC', sector: 'EV', desc: 'Range-extended EVs dominating China\'s family SUV market.', price: '$118.90', change: '+3.55%', up: true },
-    { name: 'NIO', ticker: 'NIO-USDC', sector: 'EV', desc: 'Premium EV. Battery swap network. NIO Phone ecosystem.', price: '$48.70', change: '-2.31%', up: false },
+    { name: 'BYD', ticker: 'BYDDY-USDC', sector: 'EV', desc: 'Outselling Tesla globally. EV + battery vertical integration.', price: '$9.96', change: '-3.90%', up: false },
+    { name: 'SMIC', ticker: 'SMICY-USDC', sector: 'Semis', desc: 'China\'s largest chip foundry. 7nm capable despite sanctions.', price: '$9.81', change: '+0.99%', up: true },
+    { name: 'Meituan', ticker: 'MPNGY-USDC', sector: 'Consumer', desc: 'China\'s everything app. Food delivery, travel, payments.', price: '$9.04', change: '-1.74%', up: false },
+    { name: 'Tencent', ticker: 'TCEHY-USDC', sector: 'Tech', desc: 'WeChat. Gaming. Cloud. Fintech. 1.3B users.', price: '$55.87', change: '-1.00%', up: false },
+    { name: 'Ping An', ticker: 'PNGAY-USDC', sector: 'Finance', desc: 'China\'s largest insurer. $1.2T AUM. AI-driven underwriting.', price: '$6.90', change: '-4.01%', up: false },
+    { name: 'Xiaomi', ticker: 'XIACF-USDC', sector: 'Consumer', desc: 'Phones, smart home, and now EVs. SU7 is a hit.', price: '$3.05', change: '-3.34%', up: false },
+    { name: 'Li Auto', ticker: 'LI-USDC', sector: 'EV', desc: 'Range-extended EVs dominating China\'s family SUV market.', price: '$6.46', change: '-3.17%', up: false },
+    { name: 'NIO', ticker: 'NIO-USDC', sector: 'EV', desc: 'Premium EV. Battery swap network. NIO Phone ecosystem.', price: '$5.06', change: '-3.33%', up: false },
   ];
 
   const sectorsData = [
@@ -9416,7 +9378,7 @@ img { max-width: 100%; }
   let dashHeroCompany = null;
   let dashHeroRotateInterval = null;
   let dashHeroIdx = 0;
-  const dashHeroRoster = ['GCL-USDC', 'NVDA-USDC', 'BYD-USDC', 'TSLA-USDC', 'TCEHY', 'SHEC-USDC', 'BABA', 'JKS-USDC', 'NIO', 'AAPL-USDC', 'MEIT'];
+  const dashHeroRoster = ['ZHIPU-USDC', 'BYDDY-USDC', 'TCEHY-USDC', 'BIREN-USDC', 'BABA-USDC', 'MINIMAX-USDC', 'NIO-USDC', 'MPNGY-USDC'];
 
   function buildDashboard() {
     const moversEl = document.getElementById('dashMovers');
@@ -9874,28 +9836,28 @@ img { max-width: 100%; }
   const socialFeedData = [
     { source: 'x', author: '@DeepLearningAI', time: '2m', text: 'Zhipu just dropped <strong>GLM-5 Turbo</strong> -- 40% faster inference, beats Claude on Chinese reasoning. Stock up 8% pre-market. <span class="social-ticker" data-slug="zhipu-ai">$ZHIPU</span>', likes: 4200, replies: 312, tag: 'ai' },
     { source: 'reddit', author: 'r/wallstreetbets', time: '5m', text: 'BYD just reported they shipped <strong>420K vehicles in April</strong>. That is more than Tesla + GM combined. The EV war is over and China won. <span class="social-ticker" data-slug="byd">$BYD</span>', likes: 12800, replies: 2100, tag: 'ev' },
-    { source: 'news', author: 'Bloomberg', time: '8m', text: 'Eli Lilly licenses next-gen <strong>oral GLP-1 compound</strong> from Hansoh Pharma for $3.2B upfront. Largest China biotech deal of 2026. <span class="social-ticker" data-slug="hansoh-pharma">$HNSO</span>', likes: 890, replies: 145, tag: 'glp1' },
+    { source: 'news', author: 'Bloomberg', time: '8m', text: 'Eli Lilly licenses next-gen <strong>oral GLP-1 compound</strong> from Hansoh Pharma for $3.2B upfront. Largest China biotech deal of 2026. <span class="social-ticker" data-slug="hansoh-pharma">$HANSOH</span>', likes: 890, replies: 145, tag: 'glp1' },
     { source: 'x', author: '@unusual_whales', time: '12m', text: 'Massive call volume on <span class="social-ticker" data-slug="tencent">$TCEHY</span> ahead of earnings. 3x normal. Someone knows something.', likes: 8900, replies: 1500, tag: 'ecommerce' },
     { source: 'reddit', author: 'r/ChinaStocks', time: '15m', text: 'SMIC reportedly achieved <strong>5nm production</strong> using DUV lithography. If true this changes everything for Chinese semis. <span class="social-ticker" data-slug="smic">$SMIC</span>', likes: 6400, replies: 890, tag: 'semi' },
     { source: 'x', author: '@unusual_whales', time: '16m', text: '<span class="social-ticker" data-slug="nvidia">$NVDA</span> just guided <strong>$45B next quarter</strong>. Jensen literally cannot stop winning. Data center revenue up 150% YoY. Stablecoin-settled on Marco.', likes: 31000, replies: 5200, tag: 'us' },
     { source: 'news', author: 'Reuters', time: '18m', text: 'DeepSeek closes <strong>$5B Series C</strong> at $80B valuation. IPO expected Q4 2026. Would be largest Chinese AI listing ever. <span class="social-ticker" data-slug="deepseek">$DSEEK</span>', likes: 3200, replies: 410, tag: 'ai' },
     { source: 'x', author: '@CathieWood', time: '22m', text: 'Adding <span class="social-ticker" data-slug="xiaomi">$XIACF</span> to our HK exposure. Xiaomi SU7 Ultra outselling every EV in its class. This is the Apple of China.', likes: 15200, replies: 3800, tag: 'ev' },
-    { source: 'reddit', author: 'r/biotechstocks', time: '28m', text: 'Innovent Phase 3 data for <strong>IBI362 (mazdutide)</strong> just leaked on CDE. Weight loss at 24 weeks: -19.2%. This is better than Wegovy. <span class="social-ticker" data-slug="innovent-biologics">$IVBT</span>', likes: 5100, replies: 720, tag: 'glp1' },
+    { source: 'reddit', author: 'r/biotechstocks', time: '28m', text: 'Innovent Phase 3 data for <strong>IBI362 (mazdutide)</strong> just leaked on CDE. Weight loss at 24 weeks: -19.2%. This is better than Wegovy. <span class="social-ticker" data-slug="innovent-biologics">$INNOVENT</span>', likes: 5100, replies: 720, tag: 'glp1' },
     { source: 'news', author: 'CNBC', time: '30m', text: 'Apple announces <strong>$110B buyback</strong> — largest in corporate history. Services revenue crosses $100B annual run rate. <span class="social-ticker" data-slug="apple">$AAPL</span>', likes: 8200, replies: 1400, tag: 'us' },
     { source: 'news', author: 'SCMP', time: '32m', text: 'Hong Kong markets hit <strong>18-month high</strong> as mainland capital inflows surge. Southbound Connect volumes up 340% YTD.', likes: 1800, replies: 210, tag: 'news' },
     { source: 'x', author: '@jimcramer', time: '35m', text: 'I have been wrong about China. <span class="social-ticker" data-slug="alibaba">$BABA</span> at 12x earnings with 20% FCF yield is absurd. Adding.', likes: 22000, replies: 8100, tag: 'ecommerce' },
     { source: 'reddit', author: 'r/stocks', time: '40m', text: 'Pop Mart international revenue now <strong>60% of total</strong>. This company is the Funko of Asia but actually profitable. <span class="social-ticker" data-slug="pop-mart">$POPMF</span>', likes: 3400, replies: 510, tag: 'consumer' },
     { source: 'x', author: '@elikinosaurus', time: '42m', text: 'Tesla Robotaxi launched in Austin. <strong>10K rides in week one</strong>. FSD v13 handles highway merges better than most humans. <span class="social-ticker" data-slug="tesla">$TSLA</span> Buy it with stablecoins on Marco.', likes: 19500, replies: 4800, tag: 'us' },
-    { source: 'news', author: 'FT', time: '45m', text: 'Biren Technology unveils <strong>BR200 GPU</strong> benchmarking at 85% of NVIDIA H100 performance. Stock halted on surge. <span class="social-ticker" data-slug="biren-technology">$SHEC</span>', likes: 4600, replies: 670, tag: 'semi' },
+    { source: 'news', author: 'FT', time: '45m', text: 'Biren Technology unveils <strong>BR200 GPU</strong> benchmarking at 85% of NVIDIA H100 performance. Stock halted on surge. <span class="social-ticker" data-slug="biren-technology">$BIREN</span>', likes: 4600, replies: 670, tag: 'semi' },
     { source: 'x', author: '@MacroAlf', time: '48m', text: 'China M2 money supply just hit record. PBOC is quietly easing. This is wildly bullish for HK equities. Long everything on Marco.', likes: 9200, replies: 1400, tag: 'news' },
     { source: 'reddit', author: 'r/Futurology', time: '52m', text: 'Unitree H1 humanoid robot now costs <strong>$16K</strong> and can do warehouse work. This is the iPhone moment for robotics. <span class="social-ticker" data-slug="unitree-robotics">$UNITREE</span>', likes: 18000, replies: 4200, tag: 'ai' },
     { source: 'news', author: 'Nikkei Asia', time: '55m', text: 'PetroChina announces <strong>$8B hydrogen infrastructure plan</strong> targeting 2030. Largest green energy commitment from a Chinese SOE. <span class="social-ticker" data-slug="petrochina">$PTR</span>', likes: 2100, replies: 280, tag: 'energy' },
     { source: 'x', author: '@chaikinadvisors', time: '1h', text: 'Power gauge model flashing bullish on <span class="social-ticker" data-slug="meituan">$MPNGY</span>. Meituan delivery volumes +35% QoQ. This is the DoorDash of China at 1/3 the multiple.', likes: 3800, replies: 520, tag: 'ecommerce' },
     { source: 'reddit', author: 'r/options', time: '1h', text: 'Sold puts on <span class="social-ticker" data-slug="jdcom">$JD</span> at $28 strike. If it drops that low I want to own it. 8x earnings for a $150B revenue company is free money.', likes: 2900, replies: 380, tag: 'ecommerce' },
     { source: 'reddit', author: 'r/wallstreetbets', time: '1h', text: '<span class="social-ticker" data-slug="coinbase">$COIN</span> just reported <strong>$2.1B in Q1 revenue</strong>. Crypto exchange + stablecoin infrastructure + Base L2. This is the Goldman Sachs of crypto.', likes: 14200, replies: 3100, tag: 'us' },
-    { source: 'news', author: 'Bloomberg', time: '1h', text: 'MiniMax Hailuo video AI hits <strong>100M monthly users</strong>, surpassing OpenAI Sora. Shares up 6%. <span class="social-ticker" data-slug="minimax">$JKS</span>', likes: 5500, replies: 820, tag: 'ai' },
+    { source: 'news', author: 'Bloomberg', time: '1h', text: 'MiniMax Hailuo video AI hits <strong>100M monthly users</strong>, surpassing OpenAI Sora. Shares up 6%. <span class="social-ticker" data-slug="minimax">$MINIMAX</span>', likes: 5500, replies: 820, tag: 'ai' },
     { source: 'x', author: '@GoldmanSachs', time: '2h', text: 'Upgrading China Internet sector to Overweight. Top picks: <span class="social-ticker" data-slug="tencent">$TCEHY</span>, <span class="social-ticker" data-slug="alibaba">$BABA</span>, <span class="social-ticker" data-slug="meituan">$MPNGY</span>. See 40% upside over 12 months.', likes: 7800, replies: 1200, tag: 'ecommerce' },
-    { source: 'reddit', author: 'r/pharmacy', time: '2h', text: 'United Laboratories GLP-1 biosimilar approved in China. <strong>80% cheaper than Novo</strong>. This is going to destroy Western pharma margins. <span class="social-ticker" data-slug="united-laboratories">$UIMG</span>', likes: 4100, replies: 560, tag: 'glp1' },
+    { source: 'reddit', author: 'r/pharmacy', time: '2h', text: 'United Laboratories GLP-1 biosimilar approved in China. <strong>80% cheaper than Novo</strong>. This is going to destroy Western pharma margins. <span class="social-ticker" data-slug="united-laboratories">$UNITEDLAB</span>', likes: 4100, replies: 560, tag: 'glp1' },
     { source: 'news', author: 'WSJ', time: '2h', text: 'Meta Llama 4 <strong>outperforms GPT-5 on coding benchmarks</strong>. Open-source AI race intensifying. Ad revenue up 28% on AI-driven targeting. <span class="social-ticker" data-slug="meta">$META</span>', likes: 11500, replies: 2800, tag: 'us' },
   ];
 
@@ -10086,7 +10048,7 @@ img { max-width: 100%; }
     'basket': [
       { type: 'text', content: 'Here\'s a **China AI basket** — 5 high-conviction names with strong momentum and institutional backing:' },
       { type: 'basket', items: [
-        { ticker: 'GCL-USDC', name: 'Zhipu AI', weight: '25%', reason: 'Top LLM play, GLM-5 benchmarks' },
+        { ticker: 'ZHIPU-USDC', name: 'Zhipu AI', weight: '25%', reason: 'Top LLM play, GLM-5 benchmarks' },
         { ticker: 'SRED-USDC', name: 'SenseTime', weight: '20%', reason: 'Computer vision + auto driving' },
         { ticker: 'BIDU-USDC', name: 'Baidu', weight: '20%', reason: 'Ernie Bot + autonomous driving' },
         { ticker: 'BABA-USDC', name: 'Alibaba', weight: '20%', reason: 'Qwen models + cloud AI infra' },
@@ -10137,7 +10099,7 @@ img { max-width: 100%; }
     ],
     'default': [
       { type: 'text', content: 'Let me look into that for you.' },
-      { type: 'text', content: 'Based on current market data, here\'s what I\'m seeing across Chinese equities. The AI and GLP-1 sectors continue to lead, with strong volume in $BABA-USDC, $TCEHY-USDC and $GCL-USDC today.\n\nWant me to go deeper on a specific stock, sector, or build you a custom basket?' }
+      { type: 'text', content: 'Based on current market data, here\'s what I\'m seeing across Chinese equities. The AI and GLP-1 sectors continue to lead, with strong volume in $BABA-USDC, $TCEHY-USDC and $ZHIPU-USDC today.\n\nWant me to go deeper on a specific stock, sector, or build you a custom basket?' }
     ]
   };
 
@@ -10584,7 +10546,7 @@ img { max-width: 100%; }
     },
     {
       company: 'Zhipu AI',
-      meta: 'SPOT · GCL-USDC · RECENTLY LISTED',
+      meta: 'SPOT · ZHIPU-USDC · RECENTLY LISTED',
       platform: 'WeChat',
       platformColor: '#07c160',
       platformLabel: '微信',
@@ -10859,26 +10821,36 @@ img { max-width: 100%; }
   // ── Chart Data Generation ──
 
   // Generate close-price array (used for line chart)
+  // Deterministic PRNG so charts stay consistent across refreshes (seeded per stock/timeframe)
+  function _hashSeed(str) { let h = 2166136261 >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function _seededRng(seedStr) { let a = _hashSeed(String(seedStr)); return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
   function generatePriceData(currentPriceStr, changeUp, points) {
     const price = parseFloat(currentPriceStr.replace(/[^0-9.]/g, ''));
     if (!price || isNaN(price)) return [];
+    const rnd = _seededRng(currentPriceStr + '|' + changeUp + '|' + points);
     const data = [];
-    let p = price * (0.7 + Math.random() * 0.2);
+    let p = price * (0.7 + rnd() * 0.2);
     const target = price;
     const trend = (target - p) / points;
     for (let i = 0; i < points; i++) {
-      const noise = (Math.random() - 0.48) * price * 0.03;
+      const noise = (rnd() - 0.48) * price * 0.03;
       p += trend + noise;
       p = Math.max(p * 0.5, p);
       data.push(p);
     }
-    data[data.length - 1] = price;
+    // Converge to the current price gradually so the final point isn't a spike
+    const residual = price - data[data.length - 1];
+    const denom = Math.max(1, points - 1);
+    for (let i = 0; i < points; i++) data[i] += residual * (i / denom);
+    data[points - 1] = price;
     return data;
   }
 
   // Generate OHLC candle data from a close-price array
   function generateOHLC(closeData) {
     if (!closeData || closeData.length < 2) return [];
+    const rnd = _seededRng('ohlc|' + closeData[0] + '|' + closeData[closeData.length - 1] + '|' + closeData.length);
     const ohlc = [];
     // Group into candles (combine ~4 data points per candle for visibility)
     const groupSize = Math.max(2, Math.floor(closeData.length / 60));
@@ -10887,8 +10859,8 @@ img { max-width: 100%; }
       if (chunk.length === 0) continue;
       const open = chunk[0];
       const close = chunk[chunk.length - 1];
-      const high = Math.max(...chunk) * (1 + Math.random() * 0.005);
-      const low = Math.min(...chunk) * (1 - Math.random() * 0.005);
+      const high = Math.max(...chunk) * (1 + rnd() * 0.005);
+      const low = Math.min(...chunk) * (1 - rnd() * 0.005);
       ohlc.push({ open, high, low, close });
     }
     return ohlc;
@@ -10910,16 +10882,16 @@ img { max-width: 100%; }
   };
 
   const tvHKMap = {
-    'GCL-USDC': 'HKEX:2602', 'JKS-USDC': 'HKEX:9922', 'SHEC-USDC': 'HKEX:6082',
-    'BIDU-USDC': 'HKEX:9888', 'SNET-USDC': 'HKEX:0020', 'IVBT-USDC': 'HKEX:1801',
-    'HNSO-USDC': 'HKEX:3692', 'UIMG-USDC': 'HKEX:3933', 'WUXI-USDC': 'HKEX:2359',
-    'KLBT-USDC': 'HKEX:8250', 'PGBO-USDC': 'HKEX:2487', 'BYDDY-USDC': 'HKEX:1211',
+    'ZHIPU-USDC': 'HKEX:2513', 'MINIMAX-USDC': 'HKEX:0100', 'BIREN-USDC': 'HKEX:6082',
+    'BIDU-USDC': 'HKEX:9888', 'SENSETIME-USDC': 'HKEX:0020', 'INNOVENT-USDC': 'HKEX:1801',
+    'HANSOH-USDC': 'HKEX:3692', 'UNITEDLAB-USDC': 'HKEX:3933', 'WUXI-USDC': 'HKEX:2359',
+    'INNOGEN-USDC': 'HKEX:2591', 'PEGBIO-USDC': 'HKEX:2565', 'BYDDY-USDC': 'HKEX:1211',
     'XIACF-USDC': 'HKEX:1810', 'XPEV-USDC': 'HKEX:9868', 'LI-USDC': 'HKEX:2015',
     'NIO-USDC': 'HKEX:9866', 'SMICY-USDC': 'HKEX:0981', 'HHUSF-USDC': 'HKEX:1347',
     'ASMPT-USDC': 'HKEX:0522', 'TCEHY-USDC': 'HKEX:0700', 'BABA-USDC': 'HKEX:9988',
     'MPNGY-USDC': 'HKEX:3690', 'JD-USDC': 'HKEX:9618', 'POPMF-USDC': 'HKEX:9992',
     'ANTA-USDC': 'HKEX:2020', 'IDCBY-USDC': 'HKEX:1398', 'PNGAY-USDC': 'HKEX:2318',
-    'CHL-USDC': 'HKEX:0941', 'PTR-USDC': 'HKEX:0857', 'HRZN-USDC': 'HKEX:9660',
+    'CHL-USDC': 'HKEX:0941', 'PTR-USDC': 'HKEX:0857', 'HORIZON-USDC': 'HKEX:9660',
     'GELYY-USDC': 'HKEX:0175'
   };
   function toTVSymbol(ticker) {
@@ -11060,22 +11032,23 @@ img { max-width: 100%; }
     if (!basePrice || isNaN(basePrice) || basePrice <= 0) return [];
     const counts = { '5m': 288, '15m': 192, '1h': 168, '4h': 120, '1D': 252, '1W': 104 };
     const n = counts[tf] || 252;
+    const rnd = _seededRng('trade|' + basePrice + '|' + isUp + '|' + tf);
     const ohlc = [];
-    let price = basePrice * (0.85 + Math.random() * 0.1);
+    let price = basePrice * (0.85 + rnd() * 0.1);
     const trend = isUp ? 0.0003 : -0.0002;
     const volBase = basePrice * 1000;
 
     for (let i = 0; i < n; i++) {
-      const volatility = 0.005 + Math.random() * 0.015;
-      const drift = trend + (Math.random() - 0.48) * volatility;
+      const volatility = 0.005 + rnd() * 0.015;
+      const drift = trend + (rnd() - 0.48) * volatility;
       const open = price;
-      const move1 = price * (1 + (Math.random() - 0.5) * volatility);
-      const move2 = price * (1 + (Math.random() - 0.5) * volatility);
-      const high = Math.max(open, move1, move2) * (1 + Math.random() * 0.003);
-      const low = Math.min(open, move1, move2) * (1 - Math.random() * 0.003);
+      const move1 = price * (1 + (rnd() - 0.5) * volatility);
+      const move2 = price * (1 + (rnd() - 0.5) * volatility);
+      const high = Math.max(open, move1, move2) * (1 + rnd() * 0.003);
+      const low = Math.min(open, move1, move2) * (1 - rnd() * 0.003);
       price = price * (1 + drift);
       const close = price;
-      const vol = volBase * (0.3 + Math.random() * 1.4);
+      const vol = volBase * (0.3 + rnd() * 1.4);
 
       const now = Date.now();
       const tfMs = { '5m': 300000, '15m': 900000, '1h': 3600000, '4h': 14400000, '1D': 86400000, '1W': 604800000 };
@@ -11084,10 +11057,21 @@ img { max-width: 100%; }
       ohlc.push({ open, high: Math.max(high, open, close), low: Math.min(low, open, close), close, volume: vol, time: ts });
     }
     if (ohlc.length > 0) {
+      // Smoothly scale the whole series so the final close lands on basePrice,
+      // avoiding a steep jump on the last candle.
+      const lastClose = ohlc[ohlc.length - 1].close;
+      if (lastClose > 0) {
+        const factor = basePrice / lastClose;
+        const denom = Math.max(1, ohlc.length - 1);
+        for (let i = 0; i < ohlc.length; i++) {
+          const m = 1 + (factor - 1) * (i / denom);
+          ohlc[i].open *= m; ohlc[i].high *= m; ohlc[i].low *= m; ohlc[i].close *= m;
+        }
+      }
       const last = ohlc[ohlc.length - 1];
       last.close = basePrice;
-      last.high = Math.max(last.high, basePrice);
-      last.low = Math.min(last.low, basePrice);
+      last.high = Math.max(last.high, last.open, basePrice);
+      last.low = Math.min(last.low, last.open, basePrice);
     }
     return ohlc;
   }
@@ -12729,6 +12713,13 @@ img { max-width: 100%; }
   }
 
   function buildPreIpoPage() {
+    // Pre-IPO section now embeds the standalone Pre-IPO Vaults app (obsidian-vaults.html).
+    // Set src lazily so the app loads on first visit and keeps its state across navigation.
+    var _vaultsFrame = document.getElementById('preIpoVaultsFrame');
+    if (_vaultsFrame) {
+      if (!_vaultsFrame.getAttribute('src')) _vaultsFrame.setAttribute('src', 'obsidian-vaults.html');
+      return;
+    }
     // Build hero capsule — hottest upcoming IPO
     const heroEl = document.getElementById('preIpoHero');
     if (heroEl) {
@@ -14225,8 +14216,12 @@ img { max-width: 100%; }
       if (!result) return null;
 
       const meta = result.meta;
-      const price = meta.regularMarketPrice;
-      const prevClose = meta.chartPreviousClose || meta.previousClose;
+      const rawCur = meta.currency || 'HKD';
+      const fx = rawCur === 'HKD' ? 7.8 : 1; // HK feed quotes in HKD; convert to USD for display
+      const rawPrice = meta.regularMarketPrice;
+      const rawPrev = meta.chartPreviousClose || meta.previousClose;
+      const price = rawPrice ? rawPrice / fx : null;
+      const prevClose = rawPrev ? rawPrev / fx : null;
 
       if (!price) return null;
 
@@ -14235,7 +14230,7 @@ img { max-width: 100%; }
         ticker,
         price,
         change: parseFloat(change),
-        currency: meta.currency || 'HKD',
+        currency: 'USD',
         exchange: meta.exchangeName || 'HKEX',
         timestamp: meta.regularMarketTime
       };
@@ -14504,12 +14499,12 @@ img { max-width: 100%; }
       { ticker: 'XPEV', shares: 30, costMult: 0.62 },
       { ticker: 'LI', shares: 10, costMult: 0.75 },
       // AI & Biotech — early entries on the AI wave
-      { ticker: 'GCL-USDC', shares: 4, costMult: 0.55 },
-      { ticker: 'IVBT-USDC', shares: 40, costMult: 0.70 },
-      { ticker: 'HNSO-USDC', shares: 60, costMult: 0.60 },
+      { ticker: 'ZHIPU-USDC', shares: 4, costMult: 0.55 },
+      { ticker: 'INNOVENT-USDC', shares: 40, costMult: 0.70 },
+      { ticker: 'HANSOH-USDC', shares: 60, costMult: 0.60 },
       // Others
       { ticker: 'ZA', shares: 45, costMult: 0.68 },
-      { ticker: 'SNET-USDC', shares: 500, costMult: 0.72 },
+      { ticker: 'SENSETIME-USDC', shares: 500, costMult: 0.72 },
       { ticker: 'NTES', shares: 8, costMult: 0.76 },
       // US Equities — core positions
       { ticker: 'AAPL-USDC', shares: 50, costMult: 0.78 },
@@ -14538,27 +14533,27 @@ img { max-width: 100%; }
       { ticker: 'BABA', shares: 15, costMult: 0.60, side: 'buy', hrs: 1180 },
       { ticker: 'BYD', shares: 5, costMult: 0.70, side: 'buy', hrs: 1150 },
       { ticker: 'NIO', shares: 30, costMult: 0.52, side: 'buy', hrs: 1100 },
-      { ticker: 'GCL-USDC', shares: 2, costMult: 0.48, side: 'buy', hrs: 1080 },
+      { ticker: 'ZHIPU-USDC', shares: 2, costMult: 0.48, side: 'buy', hrs: 1080 },
       // Month 2 — building positions as thesis plays out
-      { ticker: 'IVBT-USDC', shares: 40, costMult: 0.70, side: 'buy', hrs: 900 },
+      { ticker: 'INNOVENT-USDC', shares: 40, costMult: 0.70, side: 'buy', hrs: 900 },
       { ticker: 'MEIT', shares: 12, costMult: 0.65, side: 'buy', hrs: 880 },
       { ticker: 'JD', shares: 10, costMult: 0.62, side: 'buy', hrs: 860 },
       { ticker: 'XPEV', shares: 15, costMult: 0.58, side: 'buy', hrs: 840 },
-      { ticker: 'HNSO-USDC', shares: 60, costMult: 0.55, side: 'buy', hrs: 800 },
+      { ticker: 'HANSOH-USDC', shares: 60, costMult: 0.55, side: 'buy', hrs: 800 },
       // Month 3 — adding to winners
       { ticker: 'TCEHY', shares: 5, costMult: 0.78, side: 'buy', hrs: 700 },
       { ticker: 'BABA', shares: 15, costMult: 0.72, side: 'buy', hrs: 680 },
       { ticker: 'LI', shares: 10, costMult: 0.75, side: 'buy', hrs: 650 },
       { ticker: 'ZA', shares: 45, costMult: 0.68, side: 'buy', hrs: 620 },
-      { ticker: 'SNET-USDC', shares: 500, costMult: 0.72, side: 'buy', hrs: 600 },
+      { ticker: 'SENSETIME-USDC', shares: 500, costMult: 0.72, side: 'buy', hrs: 600 },
       { ticker: 'BIDU', shares: 10, costMult: 0.64, side: 'buy', hrs: 580 },
       // Taking some profits on big winners
-      { ticker: 'GCL-USDC', shares: 1, costMult: 0.85, side: 'sell', hrs: 500 },
+      { ticker: 'ZHIPU-USDC', shares: 1, costMult: 0.85, side: 'sell', hrs: 500 },
       { ticker: 'NIO', shares: 10, costMult: 0.78, side: 'sell', hrs: 480 },
       // Recent month — topping up and rebalancing
       { ticker: 'BYD', shares: 3, costMult: 0.82, side: 'buy', hrs: 360 },
       { ticker: 'XPEV', shares: 15, costMult: 0.68, side: 'buy', hrs: 340 },
-      { ticker: 'GCL-USDC', shares: 2, costMult: 0.62, side: 'buy', hrs: 300 },
+      { ticker: 'ZHIPU-USDC', shares: 2, costMult: 0.62, side: 'buy', hrs: 300 },
       { ticker: 'NTES', shares: 8, costMult: 0.76, side: 'buy', hrs: 280 },
       { ticker: 'NIO', shares: 30, costMult: 0.62, side: 'buy', hrs: 250 },
       { ticker: 'JD', shares: 10, costMult: 0.72, side: 'buy', hrs: 200 },
@@ -14588,8 +14583,8 @@ img { max-width: 100%; }
       // This week — trimming into strength
       { ticker: 'BABA', shares: 5, costMult: 0.95, side: 'sell', hrs: 72 },
       { ticker: 'TCEHY', shares: 3, costMult: 0.96, side: 'sell', hrs: 48 },
-      { ticker: 'IVBT-USDC', shares: 10, costMult: 0.92, side: 'sell', hrs: 36 },
-      { ticker: 'HNSO-USDC', shares: 20, costMult: 0.94, side: 'sell', hrs: 24 },
+      { ticker: 'INNOVENT-USDC', shares: 10, costMult: 0.92, side: 'sell', hrs: 36 },
+      { ticker: 'HANSOH-USDC', shares: 20, costMult: 0.94, side: 'sell', hrs: 24 },
       { ticker: 'NVDA-USDC', shares: 10, costMult: 0.95, side: 'sell', hrs: 18 },
       { ticker: 'NIO', shares: 10, costMult: 0.88, side: 'sell', hrs: 12 },
       { ticker: 'AAPL-USDC', shares: 5, costMult: 0.96, side: 'sell', hrs: 6 },
@@ -15796,8 +15791,10 @@ img { max-width: 100%; }
     window.addEventListener('hashchange', router);
     router();
 
-    // Initialize three-tier price feeds (async, non-blocking)
-    initPriceFeeds();
+    // Live price feeds disabled — they returned HK prices in HKD labeled as "$"
+    // (e.g. MiniMax HK$578 shown as "$578"). Using curated USD prices instead.
+    // To re-enable a currency-corrected feed, uncomment the line below.
+    // initPriceFeeds();
   }
 
   if (document.readyState === 'loading') {
