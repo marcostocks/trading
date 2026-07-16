@@ -2863,7 +2863,7 @@
       <div class="row"><span class="k" id="sub-price-k">VAULT ENTRY PRICE</span><span class="v" id="sub-price-v">$1.00</span></div>
       <div class="row"><span class="k" id="sub-receive-k">YOU RECEIVE</span><span class="v" id="sub-receive">1,000 mVAULT</span></div>
       <div class="row"><span class="k" id="sub-avail-k">AVAILABLE</span><span class="v" id="sub-avail">—</span></div>
-      <div class="row" id="sub-spread-row"><span class="k">SOURCING SPREAD</span><span class="v" id="sub-spread-v">1.50%</span></div>
+      <div class="row" id="sub-spread-row"><span class="k">PROTOCOL FEE</span><span class="v" id="sub-spread-v">5.00%</span></div>
       <div class="row"><span class="k">SETTLEMENT</span><span class="v">USDC · Solana</span></div>
     </div>
     <button class="btn btn-primary btn-block" id="sub-confirm">Confirm subscription</button>
@@ -4400,7 +4400,7 @@ const SIM = {
   data: null,
   ENTRY: 1.00,      // vault entry price — USDC per token (6dp, matches program)
   FAUCET: 50000,    // demo USDC granted on wallet connect
-  SPREAD_BPS: 150,  // sourcing spread — Marco's only on-chain vault fee (1.50%)
+  SPREAD_BPS: 500,  // flat protocol fee — Marco's single on-chain vault fee (5.00%)
 
   load() {
     if (this.data) return this.data;
@@ -4496,6 +4496,32 @@ const SIM = {
     this.data.activity.unshift({ type: "redeem", id: v.id, tokens, usdc: proceeds, ts: Date.now() });
     this.save();
     return { ok: true, proceeds, nav };
+  },
+
+  // IPO OFFER PRICE per real share (deterministic per vault) — sets delivery entitlement
+  ipoPxFor(v) { return 8 + (this.hashId(v.id) % 25); },   // ~$8–$32 / share
+
+  // SHARE-DELIVERY ELECTION (at listing): burn claim tokens, take a real share
+  // position instead of cash. Pays the flat protocol fee in USDC. Mirrors elect_delivery.
+  elect(v, tokens) {
+    this.load();
+    if (!this.data.connected) return { ok: false, err: "Connect a wallet first." };
+    if (v.status !== "ipo")   return { ok: false, err: "Share election isn't open for this vault." };
+    const h = this.holding(v.id);
+    if (!(tokens > 0))        return { ok: false, err: "Enter a token amount above zero." };
+    if (tokens > h.tokens)    return { ok: false, err: "You don't hold that many tokens." };
+    const px = this.ipoPxFor(v);
+    const shares = Math.floor(tokens / px);              // 1 token = 1 USDC; shares = USDC / offer px
+    if (shares <= 0)          return { ok: false, err: "Amount too small to deliver a whole share." };
+    const fee = +(tokens * this.SPREAD_BPS / 10000).toFixed(2);
+    if (fee > this.data.usdc) return { ok: false, err: `Need $${fee.toLocaleString()} USDC to cover the ${(this.SPREAD_BPS/100).toFixed(2)}% fee.` };
+    this.data.usdc      = +(this.data.usdc - fee).toFixed(2);
+    h.tokens            = +(h.tokens - tokens).toFixed(2);
+    h.shares            = +((h.shares || 0) + shares).toFixed(2);
+    h.electedTokens     = +((h.electedTokens || 0) + tokens).toFixed(2);
+    this.data.activity.unshift({ type: "elect", id: v.id, tokens, shares, usdc: fee, ts: Date.now() });
+    this.save();
+    return { ok: true, shares, fee };
   },
 
   // USDC WITHDRAWAL — cash out of the protocol to an external address
@@ -4649,6 +4675,8 @@ function renderDetail() {
     : isSoon ? "Coming soon" : isIpo ? "Awaiting redemption"
     : isLocked ? "Allocated" : "Vault closed";
   const ctaDisabled = isLocked || isClosed || isSoon || isIpo;
+  const ipoPx = SIM.ipoPxFor(v);
+  const sharesPerToken = ipoPx > 0 ? (1 / ipoPx) : 0;
 
   // ---- helper builders ----
   const p = pioStats(v);
@@ -4679,6 +4707,7 @@ function renderDetail() {
   // ---- Section nav (only show items where data exists) ----
   const navItems = [
     { id: "company", label: "Company", on: true },
+    { id: "election", label: "Take shares", on: isIpo },
     { id: "terms", label: "Terms", on: true },
     { id: "financials", label: "Financials", on: !!x.financials },
     { id: "strengths", label: "Strengths", on: !!x.strengths },
@@ -4778,10 +4807,25 @@ function renderDetail() {
       })()}
     </section>
 
+    ${isIpo ? `
+    <section class="dx-section" id="dx-sec-election">
+      <h2 class="dx-h2">At listing — take shares or cash</h2>
+      <div class="dx-prose"><p>${v.name} has listed. Convert your m${v.ticker} claim tokens into a real ${v.name} share position — the broker delivers the shares off-chain — or keep them to redeem for USDC once the sale settles. Converting burns the tokens and pays the flat ${(SIM.SPREAD_BPS/100).toFixed(2)}% protocol fee in USDC.</p></div>
+      <div class="dx-terms" style="margin-top:14px">
+        <div class="dx-term-row"><span class="k">Your claim tokens</span><span class="v">${SIM.holding(v.id).tokens.toLocaleString()} m${v.ticker}</span></div>
+        <div class="dx-term-row"><span class="k">IPO price</span><span class="v">$${ipoPx.toFixed(2)} / share · ${sharesPerToken.toFixed(4)} sh per token</span></div>
+        <div class="dx-term-row"><span class="k">Convert</span><span class="v" style="display:flex; align-items:center; gap:6px"><input type="number" id="dx-elect-amt" value="${SIM.holding(v.id).tokens || 0}" min="0" style="width:120px; background:var(--surface-2); border:1px solid var(--line-2); border-radius:8px; padding:6px 8px; color:var(--ink); font:inherit; text-align:right" /> m${v.ticker} <button class="btn" id="dx-elect-max" type="button">Max</button></span></div>
+        <div class="dx-term-row"><span class="k">You receive</span><span class="v" id="dx-elect-est">0 shares · fee $0</span></div>
+      </div>
+      <button class="btn btn-primary btn-block" id="dx-elect-cta" style="margin-top:14px">Convert to ${v.name} shares</button>
+      <div style="font-size:12px; color:var(--slate); margin-top:8px">Or keep your tokens and redeem for USDC when redemption opens.</div>
+    </section>
+    ` : ""}
+
     <section class="dx-section" id="dx-sec-terms">
       <h2 class="dx-h2">Terms of offering</h2>
       <div class="dx-terms">
-        <div class="dx-term-row"><span class="k">Issuer</span><span class="v">Marco Labs · openstock vault</span></div>
+        <div class="dx-term-row"><span class="k">Issuer</span><span class="v">Marco Labs · Pre-IPO vault</span></div>
         <div class="dx-term-row"><span class="k">Instrument</span><span class="v">m${v.ticker}-pre vault token</span></div>
         <div class="dx-term-row"><span class="k">Redemption basis</span><span class="v">Vault tokens redeem based on net IPO proceeds, not raw stock price performance.</span></div>
         <div class="dx-term-row"><span class="k">IPO reference price</span><span class="v">${isLive ? "$1.00" : "Pending HKEX pricing"}</span></div>
@@ -5051,6 +5095,29 @@ function renderDetail() {
       if (!SIM.isConnected()) { openConnect(); return; }
       const pre = parseFloat(document.getElementById("dx-buy-amount")?.value) || null;
       openSubscribe(v, pre);
+    });
+  }
+
+  // Share-delivery election (ipo status): convert claim tokens → real shares
+  const electAmt = document.getElementById("dx-elect-amt");
+  const electEst = document.getElementById("dx-elect-est");
+  if (electAmt && electEst) {
+    const recalcElect = () => {
+      const n = parseFloat(electAmt.value) || 0;
+      const shares = Math.floor(n * sharesPerToken);
+      const fee = n * SIM.SPREAD_BPS / 10000;
+      electEst.textContent = shares.toLocaleString() + " shares · fee $" + fee.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    };
+    electAmt.addEventListener("input", recalcElect);
+    document.getElementById("dx-elect-max")?.addEventListener("click", () => { electAmt.value = SIM.holding(v.id).tokens || 0; recalcElect(); });
+    recalcElect();
+    document.getElementById("dx-elect-cta")?.addEventListener("click", () => {
+      if (!SIM.isConnected()) { openConnect(); return; }
+      const n = parseFloat(electAmt.value) || 0;
+      const res = SIM.elect(v, n);
+      if (!res.ok) { toast(res.err, true); return; }
+      toast(`Converted ${n.toLocaleString()} m${v.ticker} → ${res.shares.toLocaleString()} ${v.name} shares (fee $${res.fee.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`);
+      refreshAll();
     });
   }
 
