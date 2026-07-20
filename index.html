@@ -951,10 +951,9 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .tbar .modeBtn{height:30px;padding:0 10px;border-radius:8px;font-size:12px;gap:7px}
 @media(max-width:700px){.modeBtn span{display:none}.modeBtn{padding:0 9px}}
 /* the change belongs next to the number it refers to, not across the card */
-.pfTop{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:10px}
+.pfTop{margin-top:10px}
 .pfEqV{font-size:40px;font-weight:600;letter-spacing:-.028em;line-height:1}
-.pfDelta{display:flex;align-items:baseline;gap:9px;font-size:14px;font-weight:500}
-.pfDelta .mini{font-size:12px}
+.pfDelta{display:flex;align-items:baseline;gap:10px;font-size:14px;font-weight:500;margin-top:9px}
 .histBody{padding:8px 18px 16px;display:flex;flex-direction:column;flex:1;min-height:0}
 .histCh{flex:1;min-height:0;margin:2px -4px 0}
 .histCh canvas{width:100%;height:100%;display:block}
@@ -1666,8 +1665,7 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
           <div class="pfTop">
             <div class="num pfEqV" id="pfEq">—</div>
             <div class="pfDelta"><span class="num" id="pfChg">—</span>
-              <span class="num" id="pfChgPct">—</span>
-              <span class="mini">unrealised on spot</span></div>
+              <span class="num" id="pfChgPct">—</span></div>
           </div>
           <div class="cwrap pfHeroCh" style="margin-top:14px"><canvas id="pfChart"></canvas></div>
           <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">
