@@ -908,8 +908,8 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .lift:active{transform:translateY(-3px);transition-duration:var(--t-fast)}
 .lift:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 /* the controls inside a lifting capsule keep their own click target */
-.lift .picker,.lift .modeSeg,.lift .tfs{cursor:default}
-.lift .picker,.lift .tf,.lift .modeSeg button{cursor:pointer}
+.lift .tfs{cursor:default}
+.lift .picker,.lift .tf,.lift .modeBtn{cursor:pointer}
 
 .pulseCard{display:flex;flex-direction:column}
 .pulseBody{padding:14px 22px 20px;display:flex;flex-direction:column;flex:1;min-height:0}
@@ -934,6 +934,27 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .secLegV span.on{color:var(--ink)}
 .secLegV u{text-decoration:none;margin-left:auto;color:var(--mute);font-size:11px;padding-left:8px}
 .secLegV span.on u{color:var(--brand)}
+/* the equity card sits beside the breakdown list, which is taller — match its
+   height and give the extra space to the chart rather than to padding */
+#p-portfolio .bento{align-items:stretch}
+#p-portfolio .bento>.card{display:flex;flex-direction:column;min-height:0}
+.pfHeroCh{flex:1;min-height:196px;position:relative}
+.pfHeroCh canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* one button per view: the capsule itself is the other way into advanced */
+.modeBtn{height:34px;padding:0 12px;border-radius:9px;display:inline-flex;align-items:center;
+  gap:8px;flex:0 0 auto;font-size:13px;font-weight:500;white-space:nowrap;
+  color:var(--ink-2);background:var(--cap-bg);border:1px solid var(--cap-line);cursor:pointer;
+  transition:color var(--t-fast),border-color var(--t-fast),background var(--t-fast)}
+.modeBtn:hover{color:var(--ink);border-color:var(--cap-line-2);background:var(--cap-fill)}
+.modeBtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.tbar .modeBtn{height:30px;padding:0 10px;border-radius:8px;font-size:12px;gap:7px}
+@media(max-width:700px){.modeBtn span{display:none}.modeBtn{padding:0 9px}}
+/* the change belongs next to the number it refers to, not across the card */
+.pfTop{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:10px}
+.pfEqV{font-size:40px;font-weight:600;letter-spacing:-.028em;line-height:1}
+.pfDelta{display:flex;align-items:baseline;gap:9px;font-size:14px;font-weight:500}
+.pfDelta .mini{font-size:12px}
 .histBody{padding:8px 18px 16px;display:flex;flex-direction:column;flex:1;min-height:0}
 .histCh{flex:1;min-height:0;margin:2px -4px 0}
 .histCh canvas{width:100%;height:100%;display:block}
@@ -1509,9 +1530,10 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
                 <span class="mini" id="hSym">—</span></span>
               <svg class="pickCar" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             </button>
-            <div class="segc modeSeg iconSeg">
-              <button data-mode="std" title="Standard view" aria-label="Standard view" class="on"><svg viewBox="0 0 24 24"><path d="M3 17l5.5-6.5 4 3.2L18 5"/><path d="M14 5h4v4"/></svg></button><button data-mode="adv" title="Advanced view" aria-label="Advanced view"><svg viewBox="0 0 24 24"><path d="M8 3v3M8 18v3M16 4v4M16 16v4"/><rect x="5.5" y="6" width="5" height="12" rx="1.2"/><rect x="13.5" y="8" width="5" height="8" rx="1.2"/></svg></button>
-            </div>
+            <button class="modeBtn" data-mode="adv" title="Advanced view"
+                    aria-label="Open advanced view">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/>
+                <path d="M15 4v16M15 12h6"/></svg><span>Advanced</span></button>
           </div>
           <div style="display:flex;align-items:flex-end;gap:34px;flex-wrap:wrap">
             <div>
@@ -1599,9 +1621,10 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
             <button class="cbtn" id="cfull" title="Expand chart" aria-label="Expand chart">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
                    stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
-            <div class="segc modeSeg iconSeg">
-              <button data-mode="std" title="Standard view" aria-label="Standard view"><svg viewBox="0 0 24 24"><path d="M3 17l5.5-6.5 4 3.2L18 5"/><path d="M14 5h4v4"/></svg></button><button data-mode="adv" title="Advanced view" aria-label="Advanced view" class="on"><svg viewBox="0 0 24 24"><path d="M8 3v3M8 18v3M16 4v4M16 16v4"/><rect x="5.5" y="6" width="5" height="12" rx="1.2"/><rect x="13.5" y="8" width="5" height="8" rx="1.2"/></svg></button>
-            </div>
+            <button class="modeBtn" data-mode="std" title="Standard view"
+                    aria-label="Back to standard view">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/>
+                <path d="M3 12h18"/></svg><span>Standard</span></button>
           </div>
           <div class="tvwrap" id="tvwrap">
             <div id="tvchart"></div>
@@ -1638,11 +1661,15 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
     <section class="page" id="p-portfolio"><div class="pad">
       <h1 class="h1" style="margin-bottom:28px">Portfolio</h1>
       <div class="bento">
-        <div class="card fill span8" style="padding:28px">
-          <div style="display:flex;justify-content:space-between;gap:16px"><span class="ct">Total Equity</span>
-            <span class="num" id="pfChg">—</span></div>
-          <div class="num" id="pfEq" style="font-size:40px;font-weight:600;letter-spacing:-.028em;margin-top:10px">—</div>
-          <div class="cwrap" style="height:196px;margin-top:14px"><canvas id="pfChart"></canvas></div>
+        <div class="card fill span8 pfHero" style="padding:28px">
+          <div class="ct">Total Equity</div>
+          <div class="pfTop">
+            <div class="num pfEqV" id="pfEq">—</div>
+            <div class="pfDelta"><span class="num" id="pfChg">—</span>
+              <span class="num" id="pfChgPct">—</span>
+              <span class="mini">unrealised on spot</span></div>
+          </div>
+          <div class="cwrap pfHeroCh" style="margin-top:14px"><canvas id="pfChart"></canvas></div>
           <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">
             <span class="mini"><span style="display:inline-block;width:14px;height:2px;background:var(--up);vertical-align:middle;margin-right:6px"></span>Equity</span>
             <span class="mini"><span style="display:inline-block;width:14px;height:0;border-top:1px dashed var(--mute);vertical-align:middle;margin-right:6px"></span>Cost basis</span>
@@ -3406,6 +3433,24 @@ function renderHeroChart(m){
   $('hcPick').onclick=e=>{e.stopPropagation();openPick($('hcPick'),'chart')};
   el.querySelectorAll('[data-htf]').forEach(t=>t.onclick=()=>{
     S.heroTf=t.dataset.htf;S.heroHold=Date.now();renderHeroChart(m)});
+  el.classList.add('lift');
+  el.setAttribute('role','link');el.setAttribute('tabindex','0');
+  el.setAttribute('aria-label','Trade '+m.n);
+  /* Capture phase, and wired once: the capsule rebuilds its own innerHTML when a
+     timeframe is picked, so a bubbled click would arrive with a detached target
+     and the control exclusions below would miss. */
+  if(!el.dataset.goWired){
+    el.dataset.goWired='1';
+    const target=()=>(S.chartMkt&&M(S.chartMkt))||S.mkt;
+    el.addEventListener('click',e=>{
+      if(editMode)return;                            // editing the board, not trading
+      if(e.target.closest('.picker,.tfs,.pickMenu,.wEdit'))return;
+      openMarket(target().id);
+    },true);
+    el.addEventListener('keydown',e=>{
+      if(editMode||e.target!==el)return;
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();openMarket(target().id)}});
+  }
 }
 /* state of the whole board, from whatever the feed has marked */
 function marketPulse(){
@@ -4401,7 +4446,7 @@ function setMode(mode){
   S.mode=mode;
   $('tradeStd').style.display=mode==='std'?'':'none';
   $('tradeAdv').style.display=mode==='adv'?'':'none';
-  document.querySelectorAll('.modeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+
   renderTape();
   renderTrade();
   if(mode==='adv')loadTV();
@@ -5106,7 +5151,10 @@ function vaultVal(){return Object.keys(S.vpos).reduce((a,id)=>{const p=S.vpos[id
 function renderPortfolio(){
   const sv=spotVal(),vv=vaultVal(),eq=S.cash+sv+vv,pnl=sv-spotCost(),u=pnl>=0;
   $('pfEq').textContent=money(eq);
+  const cost=spotCost(),pc=cost?pnl/cost*100:0;
   const ce=$('pfChg');ce.className='num '+(u?'up':'dn');ce.textContent=smoney(pnl);
+  const cp=$('pfChgPct');cp.className='num '+(u?'up':'dn');
+  cp.textContent=(u?'+':'')+pc.toFixed(2)+'%';
   $('pfCash').textContent=money(S.cash);$('pfSpot').textContent=money(sv);$('pfVault').textContent=money(vv);
   const pe=$('pfPnl');pe.textContent=smoney(pnl);pe.className='num '+(u?'up':'dn');
   // equity against cost basis, plus the two breakdown charts
@@ -5935,7 +5983,7 @@ $('catPills').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
   renderMarkets()});
 $('mktSearch').oninput=e=>{S.q=e.target.value;renderMarkets()};
 $('pipeAll').onclick=e=>{e.preventDefault();go('preipo')};
-document.querySelectorAll('.modeSeg button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 $('pickBtn').onclick=e=>{e.stopPropagation();
   $('pickMenu').classList.contains('on')?closePick():openPick($('pickBtn'))};
 $('pickBtn2').onclick=e=>{e.stopPropagation();
@@ -5953,7 +6001,7 @@ document.querySelectorAll('.utab').forEach(t=>t.onclick=()=>{
 (function(){
   const hero=$('stdHero');if(!hero)return;
   hero.addEventListener('click',e=>{
-    if(e.target.closest('.picker,.modeSeg,.tfs,.pickMenu'))return;
+    if(e.target.closest('.picker,.modeBtn,.tfs,.pickMenu'))return;
     setMode('adv');
   },true);
   hero.addEventListener('keydown',e=>{
