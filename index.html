@@ -1835,6 +1835,9 @@ const MARKETS=[
  {id:'smic',n:'SMIC',sym:'SMIC-USDC',f:'SMICUSDT',v:'bitget',k:'Spot',s:'ai',capN:6.1e10,seed:8.66,
   about:'Semiconductor Manufacturing International is China’s largest domestic foundry and the centrepiece of national efforts to localise advanced-node capacity under export controls.',
   fin:{pe:'31.4',shares:'7.98B',exch:'HKEX · STAR'}},
+ {id:'cxmt',n:'CXMT',sym:'CXMT-USDC',f:'CXMT_USDT',v:'gate',tv:'GATE:CXMTUSDT.P',k:'Spot',s:'ai',capN:6.8e10,seed:6.66,
+  about:'ChangXin Memory Technologies is China\u2019s largest DRAM maker, based in Hefei. It moved DDR5 into volume production in 2025 and supplies domestic server and handset builders, and is the only mainland producer with a public HBM roadmap.',
+  fin:{pe:'38.4\u00d7',shares:'10.2B',exch:'Pre-IPO'}},
  {id:'baba',n:'Alibaba',sym:'BABA-USDC',f:'BABAUSDT',v:'bitget',k:'Spot',s:'china',capN:1.7e12,seed:115.7,
   about:'Alibaba Group operates China’s largest e-commerce marketplaces alongside Alibaba Cloud, the region’s leading public cloud. Cloud and international commerce are the primary growth engines.',
   fin:{pe:'14.2',shares:'2.38B',exch:'NYSE · HKEX'}},
@@ -3208,6 +3211,7 @@ function drawFlow(cv,rows){
 const MKT_RIVALS={
  zhipu:  ['minimax',['Moonshot AI',2.0e10],['DeepSeek',4.8e10],['Baichuan',1.2e10]],
  minimax:['zhipu',['Moonshot AI',2.0e10],['DeepSeek',4.8e10],['StepFun',1.0e10]],
+ cxmt:   [['Samsung Memory',2.0e11],['SK Hynix',1.3e11],['Micron',1.2e11],['YMTC',2.0e10]],
  smic:   [['Hua Hong',1.4e10],['UMC',1.8e10],['GlobalFoundries',2.5e10],['Nexchip',7e9]],
  baba:   ['pdd','jd',['Douyin E-comm',9e10],['Vipshop',7e9]],
  pdd:    ['baba','jd',['Douyin E-comm',9e10],['Vipshop',7e9]],
@@ -5895,6 +5899,21 @@ async function feed(){
       MARKETS.filter(m=>m.v==='binance').forEach(m=>{const t=by[m.f];if(!t)return;
         m.px=parseFloat(t.lastPrice);m.chg=parseFloat(t.priceChangePercent);m.vol=parseFloat(t.quoteVolume||0);
         m.hi=parseFloat(t.highPrice||0);m.lo=parseFloat(t.lowPrice||0);n++})}).catch(()=>{}),
+    (async()=>{
+      const ms=MARKETS.filter(m=>m.v==='gate');if(!ms.length)return;
+      const q='?contract='+ms.map(m=>m.f).join(',');
+      let rows=null;
+      for(const u of ['https://api.gateio.ws/api/v4/futures/usdt/tickers'+q,'/api/gate/tickers'+q]){
+        try{const r=await fetch(u);if(!r.ok)continue;const j=await r.json();
+          if(Array.isArray(j)&&j.length){rows=j;break}}catch(e){}
+      }
+      if(!rows)return;
+      const by={};rows.forEach(t=>by[t.contract]=t);
+      ms.forEach(m=>{const t=by[m.f];if(!t)return;
+        m.px=parseFloat(t.last);m.chg=parseFloat(t.change_percentage);
+        m.vol=parseFloat(t.volume_24h_quote||0);
+        m.hi=parseFloat(t.high_24h||0);m.lo=parseFloat(t.low_24h||0);n++});
+    })().catch(()=>{}),
   ]);
   S.live=n>0;
   const fe=$('feed');if(fe)fe.textContent=n?n+' live':'Offline';
