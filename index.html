@@ -286,8 +286,13 @@ html[data-theme="light"] .cap.on{background:rgba(0,0,0,.045)}
   transition:all var(--t-fast)}
 .wSpan button:hover{color:var(--ink);background:var(--cap-fill)}
 .wSpan button.on{background:var(--acc);color:var(--acc-ink)}
-.wRows{align-items:center;gap:4px}
-.wRows b{font-size:10px;font-weight:600;color:var(--ink-2);min-width:9px;text-align:center}
+.wSize{display:inline-flex;align-items:center;gap:2px}
+.wSize i{font-size:9px;font-weight:600;font-style:normal;letter-spacing:.08em;
+  color:var(--mute);opacity:.7;margin-right:3px}
+.wSize button{font-size:10px;font-weight:600;color:var(--mute);padding:3px 6px;border-radius:5px;
+  min-width:19px;transition:background var(--t-fast),color var(--t-fast)}
+.wSize button:hover{color:var(--ink);background:var(--cap-fill)}
+.wSize button.on{background:var(--acc);color:var(--acc-ink)}
 .wX{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;
   color:var(--mute);transition:all var(--t-fast)}
 .wX:hover{color:var(--down);background:color-mix(in srgb,var(--down) 16%,transparent)}
@@ -1821,9 +1826,9 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 /* ════════ markets — every price is a real live feed ════════ */
 const SECTORS=[['all','All'],['ai','AI & semis'],['robotics','Robotics'],['china','China tech'],['crypto','Crypto']];
 const MARKETS=[
- {id:'zhipu',n:'Zhipu AI',sym:'ZHIPU-USDC',f:'ZHIPUUSDT',v:'bitget',k:'Spot',s:'ai',capN:1.8e11,seed:145.5,
+ {id:'zhipu',n:'Zhipu AI',sym:'ZHIPU-USDC',f:'ZHIPUUSDT',v:'bitget',k:'Spot',s:'ai',capN:5.6e10,seed:145.5,
   about:'Zhipu AI, listed as Knowledge Atlas Technology, develops the GLM family of foundation models out of Tsinghua University. It listed on the Hong Kong main board in January 2026, the first of China’s AI tigers to go public.',
-  fin:{pe:'—',shares:'1.24B',exch:'HKEX 2513'}},
+  fin:{pe:'—',shares:'385M',exch:'HKEX 2513'}},
  {id:'minimax',n:'MiniMax',sym:'MINIMAX-USDC',f:'MINIMAXUSDT',v:'bitget',k:'Spot',s:'ai',capN:4.2e10,seed:28.1,
   about:'MiniMax builds multimodal foundation models spanning language, video, speech and music, and is best known for the Talkie companion app. It listed in Hong Kong in January 2026, doubling on debut.',
   fin:{pe:'—',shares:'820M',exch:'HKEX 100'}},
@@ -1913,7 +1918,7 @@ const VAULTS=[
   {w:'0xd419…9c7a',c:'Base',a:'$18.0K',t:'4h ago',ty:'Deposit'}]},
 
 {id:'dseek',ticker:'DSEEK',name:'DeepSeek',nameCn:'深度求索',sector:'AI / LLM research',hq:'Hangzhou, China',
- founded:'2023',ceo:'Liang Wenfeng',sponsor:'Haitong Securities · CLSA',ipoValuation:'$8B',vaultSize:1e7,
+ founded:'2023',ceo:'Liang Wenfeng',sponsor:'Haitong Securities · CLSA',ipoValuation:'$48B',vaultSize:1e7,
  entryPrice:1,status:'open',raisedUsd:1.18e7,deadline:'10 September 2026',deadlineShort:'10 Sep',close:'2026-09-10T16:00:00Z',
  chains:'USDC on Solana · Ethereum · Base',
  description:'Frontier LLM research lab spun out of High-Flyer Capital.',
@@ -1927,7 +1932,7 @@ const VAULTS=[
   'Parent High-Flyer provides captive GPU capacity and balance-sheet funding.',
   'Research headcount under 200 keeps operating leverage extremely high.',
   'Strong domestic policy tailwind as China prioritises sovereign AI capability.'],
- comparables:[{t:'DSEEK',i:'DeepSeek',l:'HKEX (est.)',mc:'$8B',ev:'17.1×',self:1},
+ comparables:[{t:'DSEEK',i:'DeepSeek',l:'HKEX (est.)',mc:'$48B',ev:'102.6×',self:1},
   {t:'MOON',i:'Moonshot AI',l:'HKEX (est.)',mc:'$20B',ev:'83.3×'},
   {t:'BABA',i:'Alibaba',l:'NYSE',mc:'$1.7T',ev:'2.1×'},{t:'0700',i:'Tencent',l:'HKEX',mc:'$3.8T',ev:'5.4×'}],
  news:[{h:'DeepSeek weighs Hong Kong listing as soon as 2027',d:'Advisers have been sounded out on a dual-track process, though no mandate has been awarded.',s:'Reuters',dt:'June 2026'},
@@ -2090,7 +2095,7 @@ const START={cash:250000,pos:{
   vpos:{byte:{sub:500000,tok:500000,sh:0},shein:{sub:300000,tok:300000,sh:0}}};
 const S={page:'markets',mkt:MARKETS[0],tf:'1D',side:'buy',cash:0,pos:{},vpos:{},series:[],tab:'orders',
   orders:[],feed:FEED.slice(),elect:'shares',vault:null,cat:'all',q:'',mode:'std',bookTick:0,aboutOpen:false,
-  sort:{k:'capN',dir:-1},watch:{zhipu:1,btc:1,baba:1,tencent:1},feedTab:'All',heroI:0,heroHold:0,feedI:0,buys:[],vflow:null,flowT:0,featId:null,layout:'overview',custom:null,chartMkt:null,live:false,
+  sort:{k:'capN',dir:-1},watch:{zhipu:1,btc:1,baba:1,tencent:1},feedTab:'All',heroI:0,heroHold:0,feedI:0,buys:[],vflow:null,flowT:0,featId:null,layout:'chartspot',custom:null,chartMkt:null,live:false,
   wlOpen:false,prev:0,geo:null,wallet:null};
 function seed(){S.cash=START.cash;S.pos=JSON.parse(JSON.stringify(START.pos));
   S.vpos=JSON.parse(JSON.stringify(START.vpos));S.orders=[];
@@ -2547,7 +2552,7 @@ const PEER_SETS={
 /* each vault's own priced rounds — private, so also a step */
 const OWN_VAL={
  moon: [[8,.3],[14,1],[24,2.5],[35,4.3],[40,20]],
- dseek:[[24,1],[27,2],[33,3.4],[40,8]],
+ dseek:[[24,6],[27,14],[33,28],[40,48]],
  red:  [[0,20],[10,14],[22,17],[33,26],[41,25]],
  byte: [[0,220],[12,268],[24,300],[36,315],[40,300]],
  shein:[[0,100],[10,66],[24,50],[34,45],[40,60]],
@@ -3086,10 +3091,6 @@ function drawShareRadar(cv,rows,opt){
   radarPoly(ctx,F,rows.map(r=>r.share),mx,'rgba(228,231,238,.8)','rgba(228,231,238,.12)',1.6);
   rows.forEach((r,i)=>{
     const p=F.pt(i,Math.max(.03,r.share/mx));
-    if(r.own){                                   // the offering gets its own spoke
-      ctx.strokeStyle=up;ctx.lineWidth=1.7;
-      ctx.beginPath();ctx.moveTo(F.cx,F.cy);ctx.lineTo(p[0],p[1]);ctx.stroke();
-    }
     ctx.fillStyle=r.own?up:'rgba(228,231,238,.9)';
     ctx.beginPath();ctx.arc(p[0],p[1],r.own?4.2:2.4,0,7);ctx.fill();
     if(r.own){ctx.fillStyle=cssv('--bg');ctx.beginPath();ctx.arc(p[0],p[1],1.6,0,7);ctx.fill()}
@@ -3205,8 +3206,8 @@ function drawFlow(cv,rows){
    Entries given as a market id reuse that market's own capN so the two views
    can't disagree; the rest are approximate outside comparables. */
 const MKT_RIVALS={
- zhipu:  ['minimax',['Moonshot AI',2.0e10],['DeepSeek',8e9],['Baichuan',5e9]],
- minimax:['zhipu',['Moonshot AI',2.0e10],['DeepSeek',8e9],['StepFun',6e9]],
+ zhipu:  ['minimax',['Moonshot AI',2.0e10],['DeepSeek',4.8e10],['Baichuan',1.2e10]],
+ minimax:['zhipu',['Moonshot AI',2.0e10],['DeepSeek',4.8e10],['StepFun',1.0e10]],
  smic:   [['Hua Hong',1.4e10],['UMC',1.8e10],['GlobalFoundries',2.5e10],['Nexchip',7e9]],
  baba:   ['pdd','jd',['Douyin E-comm',9e10],['Vipshop',7e9]],
  pdd:    ['baba','jd',['Douyin E-comm',9e10],['Vipshop',7e9]],
@@ -3813,6 +3814,7 @@ function renderSectorRadar(){
    12 columns and its widgets share a height, which is what makes the board tile
    with no holes — dense packing alone cannot fill a gap left by mismatched
    heights, because only a later widget that happens to fit can backfill it. */
+const DEFAULT_LAYOUT='chartspot';
 const LAYOUTS={
   overview:{n:'Overview',d:'Every widget, balanced across the board.',
     w:[['pulse',5,4],['index',7,4],
@@ -3829,7 +3831,7 @@ const LAYOUTS={
        ['table',12,9]]},
   chartspot:{n:'Chart Spotlight',d:'Trade from a larger chart as the market moves.',
     w:[['chart',12,6],
-       ['summary',4,4],['pulse',4,4],['active',4,4],
+       ['portfolio',4,4],['pulse',4,4],['radar',4,4],
        ['table',12,9]]},
   portfolio:{n:'Positions Analysis',d:'Deep dive on your book and plan the next move.',
     w:[['portfolio',5,5],['chart',7,5],
@@ -3919,8 +3921,8 @@ function closeLayoutMenu(){
 }
 const SPANS=[2,3,4,5,6,7,8,9,10,11,12];
 function applyLayout(key){
-  const L=LAYOUTS[key]||LAYOUTS.overview;
-  S.layout=LAYOUTS[key]?key:'overview';S.custom=null;
+  const L=LAYOUTS[key]||LAYOUTS[DEFAULT_LAYOUT];
+  S.layout=LAYOUTS[key]?key:DEFAULT_LAYOUT;S.custom=null;
   try{localStorage.setItem('marco.layout',S.layout);
     localStorage.removeItem('marco.custom')}catch(e){}
   applyWidgets(L.w.map(x=>x.slice()));
@@ -3929,7 +3931,7 @@ function applyLayout(key){
 function renderLayoutSeg(){
   const b=$('layoutBtn');if(!b)return;
   b.querySelector('.lbN').textContent=S.layout==='custom'?'Your layout'
-    :(LAYOUTS[S.layout]||LAYOUTS.overview).n;
+    :(LAYOUTS[S.layout]||LAYOUTS[DEFAULT_LAYOUT]).n;
   b.onclick=e=>{e.stopPropagation();
     $('ltMenu').classList.contains('on')?closeLayoutMenu():openLayoutMenu(b)};
 }
@@ -3950,7 +3952,10 @@ const WIDGETS={
   table:{n:'All Markets',sp:12,h:9},
 };
 const wH=(id,h)=>h||(WIDGETS[id]||{}).h||4;
-const SPAN_STEPS=[4,6,8,12];
+const SIZE_W=[['S',4],['M',6],['L',12]];      // a third, a half, full width
+const SIZE_H=[['S',3],['M',5],['L',8]];       // rows of the 80px grid
+const nearestSize=(v,set)=>set.reduce((a,b)=>
+  Math.abs(b[1]-v)<Math.abs(a[1]-v)?b:a)[0];
 /* how many rows of rowH fit in a widget's body, so a taller capsule shows more
    rather than leaving dead space and a shorter one clips nothing */
 function fitRows(id,rowH,min,max){
@@ -4002,7 +4007,7 @@ const widgetPreview=id=>`<span class="wpArt">${(WPREVIEW[id]||(()=>pkRows(3)))()
 let editMode=false,dragId=null,dragFrom=null;
 function currentWidgets(){
   if(S.custom&&S.custom.length)return S.custom.map(x=>x.slice());
-  return (LAYOUTS[S.layout]||LAYOUTS.overview).w.map(x=>x.slice());
+  return (LAYOUTS[S.layout]||LAYOUTS[DEFAULT_LAYOUT]).w.map(x=>x.slice());
 }
 /* pack into rows of 12 and give each row one height, so an edit can't leave a
    hole. A row that no longer sums to 12 grows its last widget to close the gap. */
@@ -4049,6 +4054,37 @@ function insertBeside(list,item,i){
   }
   return rows.flat();
 }
+/* Resizing has to rebalance the whole row. Shrinking a capsule that sits alone
+   on its row leaves the row short, and normalise fills a short row by inflating
+   its last item — so without this the capsule would snap straight back to full
+   width. Pull the next row up instead. */
+function setSpan(list,id,sp){
+  const rows=toRows(list);
+  const ri=rows.findIndex(r=>r.some(x=>x[0]===id));
+  if(ri<0)return list;
+  const row=rows[ri],it=row.find(x=>x[0]===id);
+  it[1]=Math.max(2,Math.min(12,sp));
+  const sum=()=>row.reduce((a,x)=>a+x[1],0);
+  for(let g=0;sum()>12&&g<200;g++){          // too wide: take it off the neighbours
+    const wd=row.filter(x=>x!==it&&x[1]>MIN_SP).sort((a,b)=>b[1]-a[1])[0];
+    if(!wd)break;
+    wd[1]--;
+  }
+  while(sum()>12&&row.length>1){             // still over: spill the last neighbour
+    const last=row[row.length-1]===it?row[row.length-2]:row[row.length-1];
+    row.splice(row.indexOf(last),1);
+    rows.splice(ri+1,0,[last]);
+  }
+  while(sum()<12&&rows[ri+1]&&rows[ri+1].length){   // too narrow: pull the next row up
+    const nxt=rows[ri+1][0],room=12-sum();
+    if(nxt[1]>room){
+      if(room<MIN_SP)break;
+      nxt[1]=room;
+    }
+    row.push(nxt);rows[ri+1].shift();
+  }
+  return rows.filter(r=>r.length).flat();
+}
 function normalise(list){
   const out=[];let row=[],w=0;
   const flush=()=>{
@@ -4094,16 +4130,19 @@ function applyWidgets(list){
   if(editMode)decorateAll();
   const b=$('layoutBtn');
   if(b)b.querySelector('.lbN').textContent=
-    S.layout==='custom'?'Custom':(LAYOUTS[S.layout]||LAYOUTS.overview).n;
+    S.layout==='custom'?'Custom':(LAYOUTS[S.layout]||LAYOUTS[DEFAULT_LAYOUT]).n;
 }
 /* per-card edit chrome: handle, span stepper, remove */
 function decorate(el,sp,h){
   let bar=el.querySelector(':scope > .wEdit');
   if(!bar){bar=document.createElement('div');bar.className='wEdit';el.appendChild(bar)}
   bar.innerHTML=`<span class="wGrip">⠿ ${esc((WIDGETS[el.dataset.wg]||{}).n||el.dataset.wg)}</span>
-    <span class="wSpan">${SPAN_STEPS.map(n=>
-      `<button data-sp="${n}" class="${n===sp?'on':''}">${n}</button>`).join('')}</span>
-    <span class="wSpan wRows"><button data-h="-1">−</button><b>${h}</b><button data-h="1">+</button></span>
+    <span class="wSize"><i>W</i>${SIZE_W.map(([k,n])=>
+      `<button data-sp="${n}" class="${k===nearestSize(sp,SIZE_W)?'on':''}"
+        title="${k==='S'?'One third':k==='M'?'Half':'Full'} width">${k}</button>`).join('')}</span>
+    <span class="wSize"><i>H</i>${SIZE_H.map(([k,n])=>
+      `<button data-h="${n}" class="${k===nearestSize(h,SIZE_H)?'on':''}"
+        title="${k} height">${k}</button>`).join('')}</span>
     <button class="wX" data-x aria-label="Remove widget">✕</button>`;
   bar.querySelectorAll('[data-h]').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
@@ -4112,14 +4151,11 @@ function decorate(el,sp,h){
     if(row.length)rows.push(row);
     const band=rows.find(r=>r.some(x=>x[0]===el.dataset.wg));
     if(!band)return;
-    const cur=Math.max(...band.map(x=>wH(x[0],x[2])));
-    const next=Math.max(2,Math.min(12,cur+ +b.dataset.h));
-    band.forEach(x=>{x[2]=next});
+    band.forEach(x=>{x[2]=+b.dataset.h});   // a band shares one height
     saveCustom(list);});
   bar.querySelectorAll('[data-sp]').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
-    const list=currentWidgets();const it=list.find(x=>x[0]===el.dataset.wg);
-    if(it){it[1]=+b.dataset.sp;saveCustom(list)}});
+    saveCustom(setSpan(currentWidgets(),el.dataset.wg,+b.dataset.sp))});
   bar.querySelector('[data-x]').onclick=e=>{e.stopPropagation();
     saveCustom(currentWidgets().filter(x=>x[0]!==el.dataset.wg))};
 }
