@@ -1849,7 +1849,7 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 'use strict';
 
 /* ════════ markets — every price is a real live feed ════════ */
-const SECTORS=[['all','All'],['ai','AI & semis'],['robotics','Robotics'],['china','China tech'],['crypto','Crypto']];
+const SECTORS=[['all','All'],['ai','AI'],['semi','Semiconductors'],['robotics','Robotics'],['tech','Tech'],['crypto','Crypto']];
 const MARKETS=[
  {id:'zhipu',n:'Zhipu AI',sym:'ZHIPU-USDC',f:'ZHIPUUSDT',v:'bitget',k:'Spot',s:'ai',capN:5.6e10,seed:145.5,
   about:'Zhipu AI, listed as Knowledge Atlas Technology, develops the GLM family of foundation models out of Tsinghua University. It listed on the Hong Kong main board in January 2026, the first of China’s AI tigers to go public.',
@@ -1857,31 +1857,31 @@ const MARKETS=[
  {id:'minimax',n:'MiniMax',sym:'MINIMAX-USDC',f:'MINIMAXUSDT',v:'bitget',k:'Spot',s:'ai',capN:4.2e10,seed:28.1,
   about:'MiniMax builds multimodal foundation models spanning language, video, speech and music, and is best known for the Talkie companion app. It listed in Hong Kong in January 2026, doubling on debut.',
   fin:{pe:'—',shares:'820M',exch:'HKEX 100'}},
- {id:'smic',n:'SMIC',sym:'SMIC-USDC',f:'SMICUSDT',v:'bitget',k:'Spot',s:'ai',capN:6.1e10,seed:8.66,
+ {id:'smic',n:'SMIC',sym:'SMIC-USDC',f:'SMICUSDT',v:'bitget',k:'Spot',s:'semi',capN:6.1e10,seed:8.66,
   about:'Semiconductor Manufacturing International is China’s largest domestic foundry and the centrepiece of national efforts to localise advanced-node capacity under export controls.',
   fin:{pe:'31.4',shares:'7.98B',exch:'HKEX · STAR'}},
- {id:'cxmt',n:'CXMT',sym:'CXMT-USDC',f:'CXMT_USDT',v:'gate',tv:'GATE:CXMTUSDT.P',k:'Spot',s:'ai',capN:6.8e10,seed:6.66,
+ {id:'cxmt',n:'CXMT',sym:'CXMT-USDC',f:'CXMT_USDT',v:'gate',tv:'GATE:CXMTUSDT.P',k:'Spot',s:'semi',capN:6.8e10,seed:6.66,
   about:'ChangXin Memory Technologies is China\u2019s largest DRAM maker, based in Hefei. It moved DDR5 into volume production in 2025 and supplies domestic server and handset builders, and is the only mainland producer with a public HBM roadmap.',
   fin:{pe:'38.4\u00d7',shares:'10.2B',exch:'Pre-IPO'}},
- {id:'baba',n:'Alibaba',sym:'BABA-USDC',f:'BABAUSDT',v:'bitget',k:'Spot',s:'china',capN:1.7e12,seed:115.7,
+ {id:'baba',n:'Alibaba',sym:'BABA-USDC',f:'BABAUSDT',v:'bitget',k:'Spot',s:'tech',capN:1.7e12,seed:115.7,
   about:'Alibaba Group operates China’s largest e-commerce marketplaces alongside Alibaba Cloud, the region’s leading public cloud. Cloud and international commerce are the primary growth engines.',
   fin:{pe:'14.2',shares:'2.38B',exch:'NYSE · HKEX'}},
- {id:'tencent',n:'Tencent',sym:'TENCENT-USDC',f:'TENCENTUSDT',v:'bitget',k:'Spot',s:'china',capN:3.8e12,seed:58.8,
+ {id:'tencent',n:'Tencent',sym:'TENCENT-USDC',f:'TENCENTUSDT',v:'bitget',k:'Spot',s:'tech',capN:3.8e12,seed:58.8,
   about:'Tencent operates WeChat, the dominant Chinese super-app, and is the world’s largest games publisher by revenue. It also holds one of the broadest venture portfolios in global technology.',
   fin:{pe:'18.6',shares:'9.20B',exch:'HKEX'}},
- {id:'xiaomi',n:'Xiaomi',sym:'XIAOMI-USDC',f:'XIAOMIUSDT',v:'bitget',k:'Spot',s:'china',capN:1.8e11,seed:3.47,
+ {id:'xiaomi',n:'Xiaomi',sym:'XIAOMI-USDC',f:'XIAOMIUSDT',v:'bitget',k:'Spot',s:'tech',capN:1.8e11,seed:3.47,
   about:'Xiaomi manufactures smartphones, consumer IoT hardware and, since 2024, electric vehicles. The EV division is the fastest-growing segment and the primary driver of the current re-rating.',
   fin:{pe:'22.4',shares:'25.1B',exch:'HKEX'}},
- {id:'pdd',n:'PDD Holdings',sym:'PDD-USDC',f:'PDDUSDT',v:'bitget',k:'Spot',s:'china',capN:1.7e11,seed:83.9,
+ {id:'pdd',n:'PDD Holdings',sym:'PDD-USDC',f:'PDDUSDT',v:'bitget',k:'Spot',s:'tech',capN:1.7e11,seed:83.9,
   about:'PDD Holdings operates Pinduoduo in China and Temu internationally, running an aggressively priced, discovery-led marketplace model with very low fixed cost per order.',
   fin:{pe:'11.8',shares:'1.39B',exch:'NASDAQ'}},
- {id:'jd',n:'JD.com',sym:'JD-USDC',f:'JDUSDT',v:'bitget',k:'Spot',s:'china',capN:4.4e10,seed:29.5,
+ {id:'jd',n:'JD.com',sym:'JD-USDC',f:'JDUSDT',v:'bitget',k:'Spot',s:'tech',capN:4.4e10,seed:29.5,
   about:'JD.com runs a first-party retail model with owned logistics, giving it tighter delivery control and authenticity guarantees than marketplace-only competitors.',
   fin:{pe:'8.9',shares:'1.45B',exch:'NASDAQ · HKEX'}},
- {id:'meituan',n:'Meituan',sym:'MEITUAN-USDC',f:'MEITUANUSDT',v:'bitget',k:'Spot',s:'china',capN:6.5e10,seed:10.6,
+ {id:'meituan',n:'Meituan',sym:'MEITUAN-USDC',f:'MEITUANUSDT',v:'bitget',k:'Spot',s:'tech',capN:6.5e10,seed:10.6,
   about:'Meituan is China’s dominant local-services platform, spanning food delivery, in-store dining, hotels and instant retail through a dense rider network.',
   fin:{pe:'16.2',shares:'6.99B',exch:'HKEX'}},
- {id:'nio',n:'NIO',sym:'NIO-USDC',f:'NIOUSDT',v:'bitget',k:'Spot',s:'china',capN:1.0e10,seed:4.87,
+ {id:'nio',n:'NIO',sym:'NIO-USDC',f:'NIOUSDT',v:'bitget',k:'Spot',s:'tech',capN:1.0e10,seed:4.87,
   about:'NIO manufactures premium electric vehicles and operates a battery-swap network, selling batteries separately from the vehicle under a subscription model.',
   fin:{pe:'—',shares:'2.07B',exch:'NYSE · HKEX'}},
  {id:'hrbt',n:'Horizon Robotics',sym:'HRBT-USDC',f:null,v:null,tv:'HKEX:9660',k:'Spot',s:'robotics',capN:1.1e10,seed:1.22,nolive:1,
@@ -3349,11 +3349,12 @@ function renderWatch(){
   $('wlCount').textContent=MARKETS.length+pre.length;
   $('wlList').innerHTML=
      sect('Pinned',starred.map(row).join(''))
-    +sect('AI & semis',MARKETS.filter(m=>m.s==='ai'&&!S.watch[m.id]).map(row).join(''))
+    +sect('AI',MARKETS.filter(m=>m.s==='ai'&&!S.watch[m.id]).map(row).join(''))
+    +sect('Semiconductors',MARKETS.filter(m=>m.s==='semi'&&!S.watch[m.id]).map(row).join(''))
     +sect('Robotics',MARKETS.filter(m=>m.s==='robotics'&&!S.watch[m.id]).map(row).join(''))
-    +sect('Pre-IPO',pre.map(vrow).join(''))
-    +sect('China tech',MARKETS.filter(m=>m.s==='china'&&!S.watch[m.id]).map(row).join(''))
+    +sect('Tech',MARKETS.filter(m=>m.s==='tech'&&!S.watch[m.id]).map(row).join(''))
     +sect('Crypto',MARKETS.filter(m=>m.s==='crypto'&&!S.watch[m.id]).map(row).join(''))
+    +sect('Pre-IPO',pre.map(vrow).join(''))
     +(starred.length?'':'<div class="mini" style="padding:10px 16px">Star a market to pin it to the top.</div>');
   $('wlList').querySelectorAll('[data-w]').forEach(r=>{
     const nav=e=>{if(e.target.closest('[data-ws]'))return;openMarket(r.dataset.w)};
@@ -3490,8 +3491,8 @@ function renderPulse(){
 }
 /* ── index strip: equal-weight sector composites, rebased to 100 at the 24h open ──
    Only markets with a live change contribute, so a partial feed can't skew a sector. */
-const IDX_SECTORS=[['ai','AI & semis'],['robotics','Robotics'],
-  ['china','China tech'],['crypto','Crypto']];
+const IDX_SECTORS=[['ai','AI'],['semi','Semis'],['robotics','Robotics'],
+  ['tech','Tech'],['crypto','Crypto']];
 function idxCells(){
   return [['marco','Marco '+MARKETS.length,null]].concat(
     IDX_SECTORS.filter(([k])=>MARKETS.some(m=>m.s===k&&m.chg!=null))
@@ -3554,7 +3555,7 @@ function renderSummary(m){
    Volume share is useless here — crypto is ~99% of it and flattens every other bar. */
 function renderSectorBars(){
   const el=$('sectorBars');if(!el)return;
-  const secs=[['ai','AI & semis'],['robotics','Robotics'],['china','China tech'],['crypto','Crypto']];
+  const secs=[['ai','AI'],['semi','Semiconductors'],['robotics','Robotics'],['tech','Tech'],['crypto','Crypto']];
   const rows=secs.map(([k,lab])=>{
     const l=MARKETS.filter(m=>m.s===k&&m.chg!=null);
     return{lab,n:l.length,avg:l.length?l.reduce((a,m)=>a+m.chg,0)/l.length:null}})
@@ -4597,7 +4598,6 @@ function exec(amtEl){
   closeTicket();renderTrade();
 }
 /* ── stock picker — modelled on the index.html trade ticker dropdown ── */
-const PICK_TABS=[['all','ALL'],['ai','AI'],['robotics','ROBOTICS'],['china','TECH'],['crypto','CRYPTO']];
 let pickAnchor=null,pickHi=0,pickCat='all';
 function pickRows(){
   const q=$('pickQ').value.trim().toLowerCase();
@@ -4605,7 +4605,7 @@ function pickRows(){
     (!q||m.n.toLowerCase().includes(q)||m.sym.toLowerCase().includes(q)));
 }
 function renderPick(){
-  $('pickTabs').innerHTML=PICK_TABS.map(t=>
+  $('pickTabs').innerHTML=SECTORS.map(t=>
     `<button class="pickTab${t[0]===pickCat?' on':''}" data-pc="${t[0]}">${t[1]}</button>`).join('');
   $('pickTabs').querySelectorAll('[data-pc]').forEach(b=>b.onclick=()=>{
     pickCat=b.dataset.pc;pickHi=0;renderPick()});
@@ -6114,14 +6114,14 @@ const AG_CAD=[['15m','Every 15 min'],['1h','Hourly'],['4h','Every 4 hours'],
   ['1d','Daily'],['1w','Weekly']];
 const cadN=c=>(AG_CAD.find(x=>x[0]===c)||AG_CAD[1])[1];
 const cadMin=c=>({'15m':15,'1h':60,'4h':240,'1d':1440,'1w':10080}[c]||60);
-const AG_UNI=[['all','All markets'],['ai','AI & semis'],['robotics','Robotics'],
-  ['china','China tech'],['crypto','Crypto']];
+const AG_UNI=[['all','All markets'],['ai','AI'],['semi','Semiconductors'],
+  ['robotics','Robotics'],['tech','Tech'],['crypto','Crypto']];
 const uniN=u=>(AG_UNI.find(x=>x[0]===u)||AG_UNI[0])[1];
 const agMarkets=a=>a.uni==='all'?MARKETS.slice():MARKETS.filter(m=>m.s===a.uni);
 
 /* ships with three agents already running so the page has something to show */
 const AG_SEED=[
-  {id:'ag1',tpl:'screen',name:'AI & semis valuation screen',uni:'ai',cad:'1h',on:true,born:26},
+  {id:'ag1',tpl:'screen',name:'AI valuation screen',uni:'ai',cad:'1h',on:true,born:26},
   {id:'ag2',tpl:'flow',name:'Turnover monitor — all markets',uni:'all',cad:'15m',on:true,born:63},
   {id:'ag3',tpl:'vault',name:'Pre-IPO subscription pace',uni:'all',cad:'4h',on:false,born:12},
 ];
