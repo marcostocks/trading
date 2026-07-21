@@ -179,6 +179,8 @@ html[data-theme="light"] .cap.on{background:rgba(0,0,0,.045)}
 @container cap (max-height:340px){#p-markets .snapRows{display:none}}
 @container cap (max-height:300px){#p-markets .retFoot{display:none}}
 @container cap (max-height:300px){#p-markets .histFoot{display:none}}
+@container cap (max-height:190px){#p-markets .isp{display:none}}
+@container cap (max-height:140px){#p-markets .iv{font-size:16px;margin-top:5px}}
 @container cap (max-height:230px){#p-markets .retTfs{display:none}}
 @container cap (max-height:170px){#p-markets .retV{font-size:22px} #p-markets .retCh{min-height:52px}}
 @container cap (max-height:255px){#p-markets .snapKey{display:none}}
@@ -187,7 +189,6 @@ html[data-theme="light"] .cap.on{background:rgba(0,0,0,.045)}
 @container cap (max-height:400px){#p-markets .pulseRows>div:nth-child(n+3){display:none}}
 @container cap (max-height:300px){
   #p-markets .pulseRows{display:none}
-  #p-markets .inote{display:none}
 }
 @container cap (max-height:225px){
   #p-markets .pulseCh,#p-markets .snapCh,#p-markets .pulseLeg{display:none}
@@ -520,20 +521,16 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .mid b{font-size:17px;font-weight:600}
 .mid span{font-size:13px;color:var(--mute)}
 
-/* ── markets: index strip (cells split by hairline rules) ── */
-.istrip{display:flex;align-items:stretch;flex-wrap:wrap;padding:4px 0}
-.icell{flex:1 1 124px;min-width:0;padding:15px 16px;border-left:1px solid var(--cap-line)}
+.istrip{display:flex;align-items:stretch;flex:1;min-height:0;padding:6px 4px 14px}
+.icell{flex:1 1 0;min-width:0;display:flex;flex-direction:column;
+  padding:10px 16px;border-left:1px solid var(--cap-line)}
 .icell:first-child{border-left:0}
-.ik{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);
+.ik{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.iv{font-size:22px;font-weight:600;letter-spacing:-.03em;margin-top:6px}
-.ic{display:flex;align-items:center;gap:5px;font-size:12px;margin-top:5px}
-.iarw{width:12px;height:12px;flex:0 0 auto}
-.inote{padding:0 22px 14px;margin-top:-2px}
-.ihead{display:flex;align-items:center;justify-content:space-between;gap:16px;
-  flex-wrap:wrap;padding:16px 22px 2px}
-.ilegend{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink-2)}
-.ilegend b{font-weight:500;color:var(--ink);margin-left:6px}
+.iv{font-size:20px;font-weight:500;letter-spacing:-.026em;margin-top:8px;line-height:1}
+.ic{font-size:12px;font-weight:500;margin-top:6px}
+.isp{flex:1;min-height:26px;margin:10px -2px 0}
+.isp canvas{width:100%;height:100%;display:block}
 .idot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px}
 .idot.a{background:var(--up)}.idot.b{background:var(--acc)}
 
@@ -1132,6 +1129,7 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .actX{text-align:right}
 .secBody2{display:flex;gap:10px;flex:1;min-height:0;padding:6px 16px 14px}
 #p-markets .bento>[data-wg].card>div.secBody2:not(.ch):not(.wEdit){flex-direction:row}
+#p-markets .bento>[data-wg].card>div.istrip:not(.ch):not(.wEdit){flex-direction:row}
 .secRadarBox{flex:1;min-width:0;min-height:110px;padding:0}
 .secRadarBox canvas{width:100%;height:100%;display:block}
 .secLegV{flex:0 0 auto;flex-direction:column;align-items:stretch;gap:9px;
@@ -1471,14 +1469,10 @@ html[data-theme="light"] .fhCd .cdv:after{background:rgba(0,0,0,.12);box-shadow:
             <span class="cs live"><i class="ldot"></i>Live</span></div>
           <div class="pulseBody" id="pulse"></div>
         </div>
-        <div class="card span7" style="padding:0" data-wg="index">
-          <div class="ihead">
-            <div class="segc" id="idxMode"><button data-im="chg" class="on">Change</button><button data-im="lvl">Level</button></div>
-            <div class="ilegend"><span><span class="idot a"></span>Live<b id="idxLive">—</b></span>
-              <span><span class="idot b"></span>Sectors<b id="idxSecs">—</b></span></div>
-          </div>
+        <div class="card span7" data-wg="index">
+          <div class="ch"><span class="ct">Sector Composites</span>
+            <span class="cs" id="idxSub">Rebased to 100 at the 24h open</span></div>
           <div class="istrip" id="idxStrip"></div>
-          <div class="inote"><span class="prov" style="margin:0">Equal-weight sector composites, rebased to 100 at the 24h open · live</span></div>
         </div>
         <div class="card span8" id="heroChartCard" data-wg="chart"></div>
         <div class="card span4" data-wg="summary">
@@ -2317,7 +2311,7 @@ function sparkBars(cv,arr,col){
   }
   ctx.globalAlpha=1;
 }
-function spark(cv,data,col){
+function spark(cv,data,col,lw){
   if(!cv)return;const ctx=cv.getContext('2d'),w=cv.width,h=cv.height;
   const lo=Math.min(...data),hi=Math.max(...data),rg=(hi-lo)||1;
   const X=i=>i*w/(data.length-1),Y=v=>h-3-((v-lo)/rg)*(h-6);
@@ -2327,7 +2321,7 @@ function spark(cv,data,col){
   ctx.beginPath();ctx.moveTo(X(0),Y(data[0]));data.forEach((v,i)=>ctx.lineTo(X(i),Y(v)));
   ctx.lineTo(X(data.length-1),h);ctx.lineTo(X(0),h);ctx.closePath();ctx.fillStyle=g;ctx.fill();
   ctx.beginPath();data.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));
-  ctx.strokeStyle=col;ctx.lineWidth=1.3;ctx.lineJoin='round';ctx.stroke();
+  ctx.strokeStyle=col;ctx.lineWidth=lw||1.3;ctx.lineJoin='round';ctx.stroke();
 }
 function drawEquity(cv,eq,base){
   const F=fitCanvas(cv);if(!F)return;const{ctx,w,h}=F;
@@ -3571,26 +3565,31 @@ function idxAvg(sec){
 }
 function renderIdxStrip(){
   const el=$('idxStrip');if(!el)return;
-  if(!S.idxMode)S.idxMode='chg';
-  const live=MARKETS.filter(m=>m.chg!=null).length;
-  if($('idxLive'))$('idxLive').textContent=live;
   const IDX=idxCells();
-  if($('idxSecs'))$('idxSecs').textContent=IDX.length-1;
-  el.innerHTML=IDX.map(([id,lab,sec])=>{
+  const rows=IDX.map(([id,lab,sec],i)=>{
     const a=idxAvg(sec);
-    const cls=a==null?'':dir(a);
-    const head=a==null?'—':(S.idxMode==='lvl'?(100*(1+a/100)).toFixed(2):pctS(a));
-    const sub=a==null?'<span class="mini">Connecting…</span>'
-      :(a>=0?ARW_UP:ARW_DN)+'<span>'+(S.idxMode==='lvl'?pctS(a):(100*(1+a/100)).toFixed(2))+'</span>';
+    return{id,lab:lab.replace(/ \d+$/,''),sec,a,
+      col:sec===null?null:RING_BLUES[(i-1)%RING_BLUES.length]};
+  });
+  el.innerHTML=rows.map(r=>{
+    const lvl=r.a==null?'—':(100*(1+r.a/100)).toFixed(2);
     return `<div class="icell">
-      <div class="ik">${esc(lab)}</div>
-      <div class="iv num ${S.idxMode==='chg'?cls:''}">${head}</div>
-      <div class="ic num ${cls}">${sub}</div></div>`}).join('');
-  const seg=$('idxMode');
-  if(seg)seg.querySelectorAll('[data-im]').forEach(btn=>btn.onclick=()=>{
-    S.idxMode=btn.dataset.im;
-    seg.querySelectorAll('[data-im]').forEach(x=>x.classList.toggle('on',x.dataset.im===S.idxMode));
-    renderIdxStrip()});
+      <div class="ik">${esc(r.lab)}</div>
+      <div class="iv num">${lvl}</div>
+      <div class="ic num ${r.a==null?'':dir(r.a)}">${r.a==null?'—':pctS(r.a)}</div>
+      <div class="isp"><canvas data-isp="${r.id}"></canvas></div></div>`}).join('');
+  /* every panel carries its own scale: on a day when one sector runs away, a
+     shared axis would flatten the rest into a straight line */
+  el.querySelectorAll('[data-isp]').forEach(cv=>{
+    const r=rows.find(x=>x.id===cv.dataset.isp);
+    if(!r||r.a==null)return;
+    const box=cv.getBoundingClientRect();
+    if(!box.width||!box.height)return;
+    const k=2;                                  // 2x backing keeps the curve crisp
+    cv.width=Math.round(box.width*k);cv.height=Math.round(box.height*k);
+    spark(cv,series('idx:'+r.id,100*(1+r.a/100),'1D'),
+      r.a>=0?cssv('--up'):cssv('--down'),1.3*k);
+  });
 }
 
 /* ── summary: key/value list for whichever market the hero is showing ── */
@@ -3635,10 +3634,10 @@ function miniRow(m,val,cls){
     <b class="num ${cls||''}">${val}</b></div>`;
 }
 function renderMarkets(){
-  renderIdxStrip();renderSectorBars();renderSectorRadar();renderPfSnap();renderActive();
-  renderWeight();renderVolShare();renderHist();renderRetSince();
   renderLayoutSeg();wireEditor();watchResize();
   applyWidgets(currentWidgets());
+  renderIdxStrip();renderSectorBars();renderSectorRadar();renderPfSnap();renderActive();
+  renderWeight();renderVolShare();renderHist();renderRetSince();
   renderPulse();renderHeroChart(S.mkt);renderSummary(S.mkt);
   if(editMode){decorateAll();renderPalette()}
   const ready=MARKETS.filter(m=>m.chg!=null);
