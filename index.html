@@ -1189,9 +1189,13 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .secRow.on .secL{color:var(--up)}
 @media(max-width:900px){.secBody{grid-template-columns:1fr}}
 /* pre-IPO home reads as a dashboard: the offering closing next, then the numbers */
-.dash{display:grid;grid-template-columns:minmax(0,1fr) 384px;gap:14px;margin-top:26px;align-items:stretch}
-.dash>#vFeat{display:flex}
-.dash>#vFeat>.card{flex:1;display:flex;flex-direction:column}
+.dash{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:14px;
+  margin-top:14px;align-items:stretch}
+.allCard{display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.allCard #vgrid{flex:1;overflow-y:auto;scrollbar-width:none}
+.allCard #vgrid::-webkit-scrollbar{display:none}
+@media(max-width:1100px){.dash{grid-template-columns:minmax(0,1fr)}}
+#vFeat{margin-top:26px}
 .posCard{display:flex;flex-direction:column}
 .posBody{padding:14px 18px 18px;display:flex;flex-direction:column;flex:1;min-height:0}
 .posK{font-size:11px;color:var(--mute);margin-bottom:7px}
@@ -1218,7 +1222,44 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .posFoot{margin-top:auto;padding-top:14px;font-size:11px;color:var(--mute);line-height:1.45}
 .posEmpty{font-size:14px;color:var(--ink-2)}
 .posEmptyS{font-size:12px;color:var(--mute);line-height:1.5;margin-top:8px}
-.fhead{display:flex;align-items:center;gap:13px;position:relative}
+/* full-width hero: everything stacks and centres on the page axis */
+.vfeat{padding:38px 32px 30px;text-align:center}
+.fhead{display:flex;flex-direction:column;align-items:center;gap:14px;position:relative}
+.vfeat .fpick{flex-direction:row;align-items:center;gap:16px;text-align:left;padding:4px 8px 4px 4px}
+.vfeat .fname{font-size:38px;letter-spacing:-.03em;line-height:1.08}
+.vfeat .fpick .mini{font-size:13px}
+.vfeat .fpick .pickCar{width:20px;height:20px}
+.vfeat .vdesc{max-width:620px;margin:2px auto 0;text-align:center}
+.fhClock{text-align:center;margin-top:30px}
+.fhClockK{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--mute)}
+.fhCd{display:flex;gap:14px;justify-content:center;margin-top:14px}
+.fhCd .cdu{min-width:0;text-align:center}
+.fhCd .cdv{display:block;position:relative;min-width:96px;padding:16px 12px 17px;
+  border-radius:14px;overflow:hidden;
+  font-size:44px;font-weight:500;letter-spacing:-.02em;line-height:1;color:var(--ink);
+  background:linear-gradient(180deg,#25262d 0%,#25262d 50%,#191a1f 50%,#141519 100%);
+  border:1px solid var(--cap-line-2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 6px 16px rgba(0,0,0,.4)}
+.fhCd .cdv:after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;
+  background:rgba(0,0,0,.55);box-shadow:0 1px 0 rgba(255,255,255,.05)}
+.fhCd .cdl{display:block;font-size:10px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mute);margin-top:10px}
+.fhClosed{font-size:34px;font-weight:500;letter-spacing:-.026em;line-height:1;margin-top:12px}
+.fhClockD{font-size:12px;color:var(--mute);margin-top:14px}
+html[data-theme="light"] .fhCd .cdv{
+  background:linear-gradient(180deg,#fff 0%,#fff 50%,#f1f1f4 50%,#e9e9ee 100%)}
+html[data-theme="light"] .fhCd .cdv:after{background:rgba(0,0,0,.12);box-shadow:none}
+@media(max-width:700px){.fhCd{gap:9px}
+  .fhCd .cdv{min-width:0;padding:13px 9px 14px;font-size:32px}}
+.vfeat .fstats{margin-top:32px;padding-top:26px;border-top:1px solid var(--cap-line);
+  max-width:920px;margin-left:auto;margin-right:auto;gap:0}
+.vfeat .fstats .hstat{padding:0 18px;border-left:1px solid var(--cap-line)}
+.vfeat .fstats .hstat:first-child{border-left:0}
+.vfeat .fhFill{max-width:920px;margin:26px auto 18px}
+.vfeat .fhK{justify-content:center;gap:10px}
+@media(max-width:760px){.vfeat{padding:30px 20px 24px}
+  .vfeat .fstats .hstat{border-left:0}}
 .fpick{padding:6px 10px 6px 6px;gap:11px;min-width:0}
 .hcPick{padding:5px 10px 5px 5px;gap:11px;min-width:0}
 .hcHead{align-items:flex-start;padding-bottom:0;gap:24px}
@@ -1245,7 +1286,7 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .fstats .hsub{margin-top:7px}
 .fhFill{margin:22px 0 20px}
 .fhK{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
-.fhCh{height:96px}
+.fhCh{height:132px}
 .fhCh canvas{width:100%;height:100%;display:block}
 .facts{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:auto}
 @media(max-width:1120px){.dash{grid-template-columns:1fr}}
@@ -1262,8 +1303,9 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .badge{font-size:11px;font-weight:500;padding:4px 9px;border-radius:6px;white-space:nowrap;
   background:var(--cap-fill);border:1px solid var(--cap-line);color:var(--mute)}
 .badge.live{background:var(--cap-bg);border-color:var(--cap-line-2);color:var(--ink)}
-.bar{height:4px;background:var(--cap-fill);border-radius:99px;overflow:hidden}
-.barF{height:100%;background:var(--ink-2);border-radius:99px;transition:width var(--t-slow)}
+.bar{display:block;height:4px;background:var(--cap-fill);border-radius:99px;overflow:hidden}
+.barF{display:block;height:100%;background:var(--ink-2);border-radius:99px;
+  transition:width var(--t-slow)}
 .barF.acc{background:var(--up)}
 .vnav{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;padding:0;
   box-shadow:inset 0 -1px 0 var(--cap-line);margin-bottom:26px;
@@ -1715,9 +1757,15 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
     <section class="page" id="p-preipo">
       <div id="vaultList" class="pad">
         <h1 class="h1">Pre-IPO</h1>
+        <div id="vFeat"></div>
         <div class="dash">
-          <div id="vFeat"></div>
           <div class="card posCard" id="vMine"></div>
+          <div class="card allCard">
+            <div class="ch"><span class="ct">All Vaults</span>
+              <span class="cs num" id="vCount">—</span></div>
+            <div class="vrowH"><span>Vault</span><span>Valuation</span><span>Status</span><span>Subscribed</span><span class="r">Closes</span></div>
+            <div id="vgrid"></div>
+          </div>
         </div>
         <div class="card flowCard">
           <div class="ch"><span class="ct">Subscription Flow</span>
@@ -1744,11 +1792,6 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
             <span class="cs live"><i class="ldot"></i>Live</span></div>
           <div id="vFeedRail" class="feedRail" data-take="5" style="padding:4px 20px 18px"></div>
         </div>
-        </div>
-        <h2 class="h2" style="margin:48px 0 16px">All vaults</h2>
-        <div class="card" style="overflow:hidden">
-          <div class="vrowH"><span>Vault</span><span>Valuation</span><span>Status</span><span>Subscribed</span><span class="r">Closes</span></div>
-          <div id="vgrid"></div>
         </div>
         <div class="foot">Vault tokens are not equity. They redeem on net IPO proceeds, not on the listed share price.
           Accredited investors only. Not investment advice.</div>
@@ -2298,7 +2341,7 @@ function drawEquity(cv,eq,base){
     ctx.beginPath();ctx.moveTo(padL+pw,y);ctx.lineTo(padL+pw+4,y);ctx.stroke();
     ctx.fillText(axisFmt(v,TE.step),padL+pw+8,y)});
   ctx.textAlign='center';ctx.textBaseline='top';
-  ['30d','20d','10d','now'].forEach((t,i)=>{const x=padL+pw*i/3;
+  ['30D','20D','10D','Now'].forEach((t,i)=>{const x=padL+pw*i/3;
     ctx.globalAlpha=.4;ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,padT+ph);ctx.stroke();ctx.globalAlpha=1;
     ctx.fillText(t,Math.min(Math.max(x,padL+14),padL+pw-14),padT+ph+5)});
   ctx.save();ctx.setLineDash([3,4]);ctx.strokeStyle=cssv('--mute');ctx.lineWidth=1.1;
@@ -2821,39 +2864,58 @@ function drawFill(cv,v,opt){
   const s=subSeries(v),cap=v.vaultSize,C=opt.capsule;
   const padT=C?12:14,padB=C?6:20,padL=C?2:6,padR=C?8:62,pw=w-padL-padR,ph=h-padT-padB;
   if(pw<40||ph<24)return;
-  const top=Math.max(cap,v.raisedUsd)*1.06;
+  const top=Math.max(cap,v.raisedUsd)*(C?1/.72:1.06);
   const X=i=>padL+i*pw/(s.length-1),Y=val=>padT+ph-(val/top)*ph;
   const col=C?cssv('--up'):null;
   ctx.font='500 10px "Open Sauce Sans",sans-serif';
   if(!C){
     vGuides(ctx,[0,1,2,3].map(i=>padL+pw*i/3),padT,padT+ph);
     [0,.25,.5,.75,1].forEach(f=>axLabel(ctx,padL+pw,Y(cap*f),compact(cap*f)));
-  }
-  ctx.save();ctx.setLineDash([3,4]);
-  ctx.strokeStyle=C?'rgba(255,255,255,.30)':cssv('--mute');ctx.lineWidth=1.1;
-  ctx.beginPath();ctx.moveTo(padL,Y(cap));ctx.lineTo(padL+pw,Y(cap));ctx.stroke();ctx.restore();
-  if(C){                                   // one label, naming the line the curve may cross
-    ctx.font='500 9.5px "Open Sauce Sans",sans-serif';ctx.fillStyle=cssv('--mute');
-    ctx.textAlign='left';ctx.textBaseline='bottom';
-    ctx.fillText('cap '+compact(cap),padL+1,Math.max(Y(cap)-3,padT+8));
+    ctx.save();ctx.setLineDash([3,4]);
+    ctx.strokeStyle=cssv('--mute');ctx.lineWidth=1.1;
+    ctx.beginPath();ctx.moveTo(padL,Y(cap));ctx.lineTo(padL+pw,Y(cap));ctx.stroke();ctx.restore();
+  }else{
+    /* the cap is a rule the curve grows into: the label sits inline at the left
+       and the line picks up after it, so nothing is stacked or crowded */
+    const capY=Y(cap),lab='Cap '+compact(cap);
+    const lw=ctx.measureText(lab).width;
+    ctx.fillStyle=cssv('--mute');ctx.textAlign='left';ctx.textBaseline='middle';
+    ctx.fillText(lab,padL,capY);
+    ctx.save();ctx.setLineDash([2,5]);ctx.lineCap='round';
+    ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(padL+lw+10,capY);ctx.lineTo(padL+pw,capY);ctx.stroke();ctx.restore();
   }
   const g=ctx.createLinearGradient(0,padT,0,padT+ph);
-  if(C){g.addColorStop(0,rgba(col,.32));g.addColorStop(1,rgba(col,.02))}
+  if(C){g.addColorStop(0,rgba(col,.26));g.addColorStop(.72,rgba(col,.05));g.addColorStop(1,rgba(col,0))}
   else{g.addColorStop(0,'rgba(228,230,236,.22)');g.addColorStop(1,'rgba(228,230,236,0)')}
   ctx.beginPath();ctx.moveTo(X(0),Y(s[0]));s.forEach((val,i)=>ctx.lineTo(X(i),Y(val)));
   ctx.lineTo(X(s.length-1),padT+ph);ctx.lineTo(X(0),padT+ph);ctx.closePath();
   ctx.fillStyle=g;ctx.fill();
-  const ly=Y(s[s.length-1]);
+  const ly=Y(s[s.length-1]),lx=X(s.length-1);
   ctx.beginPath();s.forEach((val,i)=>i?ctx.lineTo(X(i),Y(val)):ctx.moveTo(X(i),Y(val)));
+  if(C){ctx.save();ctx.shadowColor=rgba(col,.5);ctx.shadowBlur=8}
   ctx.strokeStyle=C?col:silverStroke(ctx,padL,padL+pw);
-  ctx.lineWidth=C?1.8:1.9;ctx.lineJoin='round';ctx.stroke();
-  ctx.fillStyle=C?col:'#E9EAEF';ctx.beginPath();ctx.arc(X(s.length-1),ly,2.6,0,7);ctx.fill();
-  if(C)return;
+  ctx.lineWidth=1.9;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
+  if(C)ctx.restore();
+  if(C){
+    const over=v.raisedUsd>cap+.005;
+    ctx.fillStyle=rgba(col,.16);ctx.beginPath();ctx.arc(lx,ly,6.5,0,7);ctx.fill();
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(lx,ly,3,0,7);ctx.fill();
+    ctx.fillStyle=cssv('--bg');ctx.beginPath();ctx.arc(lx,ly,1.2,0,7);ctx.fill();
+    // the committed figure rides the end of the curve rather than sitting in a corner
+    ctx.font='600 11px "Open Sauce Sans",sans-serif';
+    ctx.fillStyle=over?cssv('--acc'):col;
+    ctx.textAlign='right';ctx.textBaseline='bottom';
+    ctx.fillText(compact(v.raisedUsd)+' · '+(v.raisedUsd/cap*100).toFixed(0)+'%'
+      +(over?' Oversubscribed':''),lx-11,Math.max(ly-9,padT+11));
+    return;
+  }
+  ctx.fillStyle='#E9EAEF';ctx.beginPath();ctx.arc(lx,ly,2.6,0,7);ctx.fill();
   valueChip(ctx,padL+pw+4,ly,compact(s[s.length-1]),'#E4E6EC');
   ctx.font='600 10px "Open Sauce Sans",sans-serif';ctx.fillStyle=cssv('--mute');
   ctx.textAlign='left';ctx.textBaseline='bottom';ctx.fillText('Cap '+compact(cap),padL+2,Y(cap)-5);
   ctx.font='500 10px "Open Sauce Sans",sans-serif';
-  ctx.textBaseline='top';['6w','4w','2w','now'].forEach((t,i)=>{
+  ctx.textBaseline='top';['6W','4W','2W','Now'].forEach((t,i)=>{
     ctx.textAlign='center';
     ctx.fillText(t,Math.min(Math.max(padL+pw*i/3,padL+10),padL+pw-10),padT+ph+6)});
 }
@@ -2920,8 +2982,8 @@ function drawInflow(cv,v){
   ctx.strokeStyle=cssv('--line');ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(padL,padT+ph+.5);ctx.lineTo(padL+pw,padT+ph+.5);ctx.stroke();
   ctx.fillStyle=cssv('--mute');ctx.font='500 10px "Open Sauce Sans",sans-serif';
-  ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('6 weeks ago',padL+2,padT+ph+5);
-  ctx.textAlign='right';ctx.fillText('now',padL+pw-2,padT+ph+5);
+  ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('6 Weeks Ago',padL+2,padT+ph+5);
+  ctx.textAlign='right';ctx.fillText('Now',padL+pw-2,padT+ph+5);
 }
 
 /* ════════ outlook ════════
@@ -2958,8 +3020,8 @@ function drawScenarios(cv,v){
     ctx.beginPath();ctx.moveTo(padL-4,y);ctx.lineTo(padL,y);ctx.stroke();
     ctx.fillText(money(val,2),padL-8,y)});
   ctx.textAlign='center';ctx.textBaseline='top';
-  ctx.fillText('subscription',padL+26,padT+ph+7);
-  ctx.fillText('listing',padL+pw-16,padT+ph+7);
+  ctx.fillText('Subscription',padL+26,padT+ph+7);
+  ctx.fillText('Listing',padL+pw-16,padT+ph+7);
   // a case curves away from par rather than running straight to its endpoint
   const curve=m=>{const pts=[];for(let i=0;i<=40;i++){const t=i/40;
     pts.push([X(t),Y(entry+(tok(m)-entry)*Math.pow(t,1.7))])}return pts};
@@ -3225,8 +3287,8 @@ function drawFlow(cv,rows){
     ctx.beginPath();ctx.arc(X(n-1),Y(d[n-1]),r.hot?3:2.2,0,7);ctx.fill();
   });
   ctx.fillStyle=cssv('--mute');ctx.textAlign='left';ctx.textBaseline='top';
-  ctx.fillText('30 min ago',padL+2,padT+ph+5);
-  ctx.textAlign='right';ctx.fillText('now',padL+pw-2,padT+ph+5);
+  ctx.fillText('30 Min Ago',padL+2,padT+ph+5);
+  ctx.textAlign='right';ctx.fillText('Now',padL+pw-2,padT+ph+5);
 }
 
 /* ════════ competitor sets ════════
@@ -3428,7 +3490,7 @@ function renderHeroChart(m){
         `<button class="tf ${t===S.heroTf?'on':''}" data-htf="${t}">${t}</button>`).join('')}</div>
     </div>`;
   area($('heroChart'),series(m.id,m.px,S.heroTf),
-    {pad:10,axis:true,ref:false,times:['','','','now']});
+    {pad:10,axis:true,ref:false,times:['','','','Now']});
   $('hcPick').onclick=e=>{e.stopPropagation();openPick($('hcPick'),'chart')};
   el.querySelectorAll('[data-htf]').forEach(t=>t.onclick=()=>{
     S.heroTf=t.dataset.htf;S.heroHold=Date.now();renderHeroChart(m)});
@@ -5229,7 +5291,7 @@ function renderFeatPick(){
       <span class="pickMk"><span class="pickIc">${esc(v.ticker[0])}</span>
         <span style="min-width:0">
           <span class="pickNm">${esc(v.name)}</span>
-          <span class="mini" style="display:block">${esc(v.sector)} · m${esc(v.ticker)}</span></span>
+          <span class="mini" style="display:block">${esc(v.sector)}</span></span>
         <span class="pickChips"><span class="pchip">${STATUS[v.status].l}</span></span></span>
       <span class="pickCol num">${v.ipoValuation}</span>
       <span class="pickCol num">${compact(v.vaultSize)}</span>
@@ -5381,29 +5443,35 @@ function renderVaults(){
   $('vFeat').innerHTML=feat?`<div class="card vfeat lift" data-feat="${feat.id}"
     role="link" tabindex="0" aria-label="Open ${esc(feat.name)}">
     <div class="fhead">
-      <button class="picker fpick" id="featPick" aria-haspopup="listbox" aria-expanded="false">
-        <span class="mark" style="width:38px;height:38px;font-size:16px">${esc(feat.ticker[0])}</span>
-        <span style="text-align:left;min-width:0">
-          <span class="fname">${esc(feat.name)}</span>
-          <span class="mini">${esc(feat.sector)} · m${esc(feat.ticker)}</span></span>
-        <svg class="pickCar" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
       <span class="badge${feat.status==='open'||feat.status==='live'?' live':''}">${
         feat.id===defaultFeatured().id?'Closing next':STATUS[feat.status].l}</span>
+      <button class="picker fpick" id="featPick" aria-haspopup="listbox" aria-expanded="false">
+        <span class="mark" style="width:58px;height:58px;border-radius:16px;font-size:24px">${esc(feat.ticker[0])}</span>
+        <span style="min-width:0">
+          <span class="fname">${esc(feat.name)}</span>
+          <span class="mini">${esc(feat.sector)}</span></span>
+        <svg class="pickCar" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="vdesc">${esc(feat.description)}</div>
     </div>
-    <div class="vdesc" style="margin:16px 0 22px">${esc(feat.description)}</div>
+    ${hasClock(feat)?`<div class="fhClock">
+      <div class="fhClockK">Subscription closes in</div>
+      <div class="cdn fhCd" data-cdfull="${feat.close}"></div>
+      <div class="fhClockD">${esc(feat.deadline||feat.deadlineShort||'')}</div>
+    </div>`:`<div class="fhClock">
+      <div class="fhClockK">Status</div>
+      <div class="fhClosed">${STATUS[feat.status].l}</div>
+      <div class="fhClockD">${esc(feat.deadlineShort||'—')}</div>
+    </div>`}
     <div class="fstats">${[
       ['Valuation',feat.ipoValuation,'pre-money'],
       ['Vault size',compact(feat.vaultSize),isOver(feat)
         ?compact(feat.raisedUsd-feat.vaultSize)+' above cap':compact(gtdRoom(feat))+' room left'],
-      ['Subscribed',subPct(feat).toFixed(0)+'%',compact(feat.raisedUsd)+' committed'],
-      hasClock(feat)?['Closes in',cdShort(feat.close),esc(feat.deadlineShort||'')]
-        :['Status',STATUS[feat.status].l,esc(feat.deadlineShort||'—')]
+      ['Subscribed',subPct(feat).toFixed(0)+'%',compact(feat.raisedUsd)+' committed']
     ].map(x=>`<div class="hstat"><div class="hk">${x[0]}</div>
-      <div class="hv num">${x[1]}</div><div class="hsub num">${x[2]}</div></div>`).join('')}</div>
+      <div class="hv num">${x[1]}</div>
+      <div class="hsub num">${x[2]}</div></div>`).join('')}</div>
     <div class="fhFill">
-      <div class="fhK"><span class="mini">${compact(feat.raisedUsd)} of ${compact(feat.vaultSize)} committed</span>
-        <span class="mini num${isOver(feat)?' over':''}">${subPct(feat).toFixed(0)}%${isOver(feat)?' · oversubscribed':''}</span></div>
       <div class="fhCh"><canvas id="featCh"></canvas></div>
     </div>
     </div>`:'';
@@ -5418,6 +5486,7 @@ function renderVaults(){
     if($('featCh'))drawFill($('featCh'),feat,{capsule:true});
   }
 
+  const vc=$('vCount');if(vc)vc.textContent=VAULTS.length+' offerings';
   $('vgrid').innerHTML=VAULTS.map(v=>{const p=raisedPct(v);
     return `<div class="vrow" data-v="${v.id}" tabindex="0" role="link">
       <span class="vname"><span class="mark" style="width:32px;height:32px;border-radius:9px;font-size:13px">${esc(v.ticker[0])}</span>
@@ -5703,7 +5772,7 @@ function wireShare(v){
     toast(url);
   };
 }
-const markWord=v=>v.status==='live'||v.status==='ipo'?'listing':'offering';
+const markWord=v=>v.status==='live'||v.status==='ipo'?'Listing':'Offering';
 /* the three cases in figures, since the chart gives shape but not precision */
 function scenarioRows(v){
   const o=OUTLOOK[v.id];if(!o)return[];
