@@ -75,22 +75,29 @@ a{color:inherit;text-decoration:none}
 .app>main{min-width:0}
 .rail{position:sticky;top:0;height:calc(100vh / var(--z));
   display:flex;flex-direction:column;align-items:center;gap:2px;padding:16px 0 14px;z-index:46}
-.logo{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;margin-bottom:20px;
-  background:var(--ink);color:var(--bg);font-weight:600;font-size:15px;letter-spacing:-.5px}
+.logo{position:relative;width:29px;height:29px;border-radius:9px;display:grid;place-items:center;margin-bottom:20px;
+  background:var(--ink);color:var(--bg);font-weight:600;font-size:15px;letter-spacing:-.5px;
+  cursor:pointer;font-family:inherit;border:0;padding:0;
+  transition:transform var(--t-fast),opacity var(--t-fast)}
+.logo:hover{transform:scale(1.06)}
+.logo:active{transform:scale(.96)}
+.logo:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 .rbtn{width:35px;height:35px;border-radius:9px;display:grid;place-items:center;color:var(--mute);
   transition:color var(--t-fast),background var(--t-fast);position:relative}
 .rbtn:hover{color:var(--ink-2);background:var(--surface)}
 .rbtn.on{color:var(--ink);background:var(--surface-2)}
 .rbtn svg{width:17px;height:17px;stroke-width:1.5;fill:none;stroke:currentColor}
-.rbtn::after{content:attr(data-tip);position:absolute;left:48px;white-space:nowrap;background:var(--bg-2);
+.rbtn::after,.logo::after{content:attr(data-tip);position:absolute;left:48px;white-space:nowrap;background:var(--bg-2);
   border:1px solid var(--line);padding:6px 10px;border-radius:7px;font-size:13px;color:var(--ink);
   opacity:0;pointer-events:none;transition:opacity var(--t-fast);z-index:70}
-.rbtn:hover::after{opacity:1}
+.rbtn:hover::after,.logo:hover::after{opacity:1}
 .rsp{flex:1}
 .rdiv{width:22px;height:1px;background:var(--line);margin:8px 0}
 .avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
   background:var(--acc);color:var(--acc-ink);font-weight:600;font-size:12px;transition:filter var(--t-fast)}
 .avatar:hover{filter:brightness(1.12)}
+.avatar.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc)}
+.avatar:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 .rstat{font-size:11px;color:var(--mute);text-align:center;line-height:1.3;margin-top:10px}
 .rdot{width:6px;height:6px;border-radius:50%;background:var(--ink-2);margin:0 auto 5px}
 .rdot.off{background:var(--down)}
@@ -986,6 +993,59 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .ltmGrid .ltN{font-size:13px;margin-top:9px}
 .ltmGrid .ltD{display:none}
 @media(max-width:700px){.ltmGrid{grid-template-columns:repeat(2,1fr)}}
+/* ── settings ── */
+#p-settings .setHead{margin-bottom:22px}
+#p-settings .vsec{padding-bottom:8px}
+.setHead{display:flex;align-items:center;gap:18px}
+.setAv{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:var(--acc);color:var(--acc-ink);font-weight:600;font-size:19px}
+.setCard{padding:4px 22px;display:flex;flex-direction:column}
+.setCard .setRow:last-child{border-bottom:0}
+.setCardH{font-size:14px;font-weight:600;letter-spacing:-.01em;padding:16px 0 4px}
+.setRow{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:15px 0;border-top:1px solid var(--cap-line)}
+.setRow:first-child{border-top:0}
+.setK{font-size:14px;font-weight:500;display:flex;flex-direction:column;gap:4px;min-width:0}
+.setSub{font-size:12px;font-weight:400;color:var(--mute);line-height:1.5}
+.setV{font-size:14px;color:var(--ink-2);text-align:right;flex:0 0 auto;white-space:nowrap}
+.setPend{font-size:11px;color:var(--mute);border:1px solid var(--cap-line);
+  padding:3px 8px;border-radius:6px}
+/* switch */
+.tgl{width:40px;height:23px;border-radius:99px;flex:0 0 auto;cursor:pointer;position:relative;
+  background:var(--cap-fill);border:1px solid var(--cap-line);transition:background var(--t-fast),
+  border-color var(--t-fast)}
+.tgl i{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
+  background:var(--mute);transition:transform var(--t-fast),background var(--t-fast)}
+.tgl.on{background:color-mix(in srgb,var(--up) 26%,transparent);
+  border-color:color-mix(in srgb,var(--up) 50%,transparent)}
+.tgl.on i{transform:translateX(17px);background:var(--up)}
+.tgl:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+/* verification */
+.kycCard{padding:22px}
+.kycTop{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.kycState{font-size:24px;font-weight:500;letter-spacing:-.024em;margin-top:7px}
+.kycNote{font-size:12px;color:var(--mute);line-height:1.55;margin-top:14px;padding-top:14px;
+  border-top:1px solid var(--cap-line)}
+.kycList{margin-top:6px}
+.kycT{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--cap-line)}
+.kycDot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;margin-top:5px;
+  background:var(--cap-line-2)}
+.kycT.done .kycDot{background:var(--up)}
+.kycT.next .kycDot{background:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.kycTBody{min-width:0}
+.kycTN{font-size:14px;font-weight:500;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.kycTag{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  padding:3px 7px;border-radius:5px;color:var(--mute);border:1px solid var(--cap-line)}
+.kycTag.done{color:var(--up);border-color:color-mix(in srgb,var(--up) 34%,transparent)}
+.kycTag.next{color:var(--brand);border-color:color-mix(in srgb,var(--brand) 34%,transparent)}
+.kycTD{font-size:13px;color:var(--mute);line-height:1.5;margin-top:5px}
+.kycCaps{list-style:none;margin:9px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+.kycCaps li{font-size:12.5px;color:var(--ink-2);display:flex;gap:8px;line-height:1.45}
+.kycCaps li:before{content:"";width:4px;height:4px;border-radius:50%;background:var(--cap-line-2);
+  flex:0 0 auto;margin-top:7px}
+.kycT.locked .kycTN,.kycT.locked .kycCaps li{color:var(--mute)}
+@media(max-width:620px){.setRow{flex-direction:column;align-items:flex-start;gap:10px}
+  .setV{text-align:left}}
 /* ── agents ── */
 .agHero{text-align:center;padding:52px 34px 0;display:flex;flex-direction:column;
   align-items:center;overflow:hidden}
@@ -1426,7 +1486,7 @@ html[data-theme="light"] .fhCd .cdv:after{background:rgba(0,0,0,.12);box-shadow:
 <body>
 <div class="app" id="app" data-wl="off">
   <nav class="rail" aria-label="Primary">
-    <div class="logo" aria-hidden="true">M</div>
+    <button class="logo" id="homeBtn" data-tip="Markets" aria-label="Go to markets">M</button>
     <button class="rbtn" data-nav="markets" data-tip="Markets" aria-label="Markets"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></button>
     <button class="rbtn" data-nav="trade" data-tip="Trade" aria-label="Trade"><svg viewBox="0 0 24 24"><path d="M4 17l5-5 4 3 7-8"/><path d="M20 7v5h-5"/></svg></button>
     <button class="rbtn" data-nav="portfolio" data-tip="Portfolio" aria-label="Portfolio"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
@@ -1792,6 +1852,11 @@ html[data-theme="light"] .fhCd .cdv:after{background:rgba(0,0,0,.12);box-shadow:
       </div>
       <div id="vaultDetail" style="display:none"></div>
     </section>
+    <!-- ═══ SETTINGS ═══ -->
+    <section class="page" id="p-settings"><div class="pad">
+      <div id="settingsBody"></div>
+    </div></section>
+
     <!-- ═══ AGENTS ═══ -->
     <section class="page" id="p-agents"><div class="pad">
       <div id="agentList">
@@ -5985,6 +6050,9 @@ function go(page,keepVault){
   document.querySelectorAll('.rbtn[data-nav]').forEach(b=>{
     const on=b.dataset.nav===page;b.classList.toggle('on',on);
     on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
+  const av=$('avatar');
+  if(av){av.classList.toggle('on',page==='settings');
+    page==='settings'?av.setAttribute('aria-current','page'):av.removeAttribute('aria-current')}
   const path=(page==='preipo'&&keepVault&&S.vault)?'#/preipo/'+S.vault.id:'#/'+page;
   if(location.hash!==path)history.replaceState(null,'',path);
   renderTape();
@@ -5994,6 +6062,7 @@ function go(page,keepVault){
   if(page==='preipo'&&!keepVault)renderVaults();
   if(page==='agents'&&!S.agent){$('agentList').style.display='block';
     $('agentDetail').style.display='none';renderAgents()}
+  if(page==='settings')renderSettings();
   if(S.wlOpen)renderWatch();
   if(!keepVault)scrollTo(0,0);
 }
@@ -6042,6 +6111,12 @@ async function feed(){
 
 /* ════════ wire ════════ */
 document.querySelectorAll('.rbtn[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+/* the mark is the way back to the top of the app, wherever you have got to */
+$('homeBtn').onclick=()=>{
+  if(S.vault)backToList();
+  if(S.agent)agentsBack();
+  go('markets');scrollTo(0,0);
+};
 $('wlBtn').onclick=()=>setWL(!S.wlOpen);
 $('catPills').innerHTML=SECTORS.map(s=>`<button data-c="${s[0]}" class="${s[0]===S.cat?'on':''}">${s[1]}</button>`).join('');
 $('catPills').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
@@ -6080,7 +6155,8 @@ $('chart').addEventListener('mousemove',e=>{
   const v=S.series[i],c=$('cross');c.style.opacity=1;c.textContent=money(v,dp(v));
   c.style.left=Math.min(g.w-100,Math.max(0,g.X(i)-48))+'px';c.style.top=Math.max(0,g.Y(v)-42)+'px'});
 $('chart').addEventListener('mouseleave',()=>$('cross').style.opacity=0);
-$('avatar').onclick=()=>toast('Tony Tran · '+money(S.cash)+' USDC available');
+$('avatar').onclick=()=>go('settings');
+$('avatar').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go('settings')}};
 $('themeBtn').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme',d?'light':'dark');
   go(S.page,!!S.vault);if(S.page==='trade'&&S.mode==='adv')loadTV()};
@@ -6113,10 +6189,12 @@ addEventListener('resize',()=>{if(S.page!=='preipo'||S.vault)return;
 addEventListener('hashchange',()=>{
   const seg=(location.hash||'#/markets').replace('#/','').split('/');
   const p=seg[0];
-  if(!['markets','trade','portfolio','preipo','agents'].includes(p))return;
+  if(!['markets','trade','portfolio','preipo','agents','settings'].includes(p))return;
   if(p==='preipo'&&seg[1]){if(V(seg[1])&&(!S.vault||S.vault.id!==seg[1]))openVault(seg[1]);return}
   if(p==='preipo'&&S.vault)return backToList();
   if(p==='agents'&&seg[1]){if(!S.agent||S.agent.id!==seg[1])openAgent(seg[1]);return}
+  if(p==='settings'&&seg[1]){if(S.page!=='settings'){S.setTab=seg[1];go('settings')}
+    else setPanel(seg[1]);return}
   if(p==='agents'&&S.agent)return agentsBack();
   if(p!==S.page)go(p)});
 setInterval(tickCountdowns,1000);
@@ -6502,6 +6580,221 @@ function renderBuilder(){
     toast('Agent created — first run scheduled');
   };
 }
+
+/* ════════ settings ════════
+   Account, verification and preferences. The preference toggles are real and
+   persist; the verification flow is scaffolding for a provider that is not
+   connected yet, and says so rather than showing a status nobody has earned. */
+
+const PREF_DEFAULTS={confirmOrders:true,priceAlerts:true,vaultAlerts:true,
+  agentAlerts:false,statements:true,marketing:false};
+function loadPrefs(){
+  if(S.prefs)return S.prefs;
+  let raw=null;
+  try{raw=JSON.parse(localStorage.getItem('marco.prefs')||'null')}catch(e){}
+  S.prefs=Object.assign({},PREF_DEFAULTS,raw&&typeof raw==='object'?raw:{});
+  return S.prefs;
+}
+function savePrefs(){try{localStorage.setItem('marco.prefs',JSON.stringify(S.prefs))}catch(e){}}
+
+/* KYC is not wired to a provider yet, so every account sits at the base tier.
+   The ladder is shown in full because the limits are what a user needs to plan
+   around, but nothing here claims a check has run. */
+const KYC_TIERS=[
+  {id:'t0',n:'Account',d:'Email and a connected wallet.',
+   caps:['Browse markets and vaults','No deposits or trading'],state:'done'},
+  {id:'t1',n:'Tier 1 · Identity',d:'Government photo ID and a liveness check.',
+   caps:['Deposit and trade up to $50,000 a year','Subscribe to pre-IPO vaults'],state:'next'},
+  {id:'t2',n:'Tier 2 · Address and source of funds',
+   d:'Proof of address and evidence of where the funds come from.',
+   caps:['Raises the annual limit to $500,000'],state:'locked'},
+  {id:'t3',n:'Tier 3 · Enhanced due diligence',
+   d:'Institutional review, including beneficial ownership.',
+   caps:['No preset limit','Corporate and fund accounts'],state:'locked'},
+];
+const KYC_ONGOING=[
+  ['Sanctions and PEP screening','Checked at onboarding and re-screened daily against updated lists.'],
+  ['Transaction monitoring','Deposits, withdrawals and vault subscriptions are monitored for unusual patterns.'],
+  ['Travel rule','Originator and beneficiary details are exchanged with counterparty institutions above the threshold.'],
+  ['Record keeping','Identity records and transaction history are retained for the statutory period.'],
+];
+
+const sRow=(k,v,sub)=>`<div class="setRow"><div class="setK">${k}${
+  sub?`<span class="setSub">${sub}</span>`:''}</div><div class="setV">${v}</div></div>`;
+const sToggle=(id,k,sub)=>`<div class="setRow"><div class="setK">${k}${
+  sub?`<span class="setSub">${sub}</span>`:''}</div>
+  <button class="tgl${loadPrefs()[id]?' on':''}" role="switch" data-pref="${id}"
+    aria-checked="${!!loadPrefs()[id]}" aria-label="${esc(k)}"><i></i></button></div>`;
+
+const SET_TABS=[['account','Account'],['verify','Verification'],['trading','Trading'],
+  ['alerts','Notifications'],['appearance','Appearance'],['security','Security'],['data','Data']];
+
+function setPanel(key){
+  document.querySelectorAll('#p-settings .vsec').forEach(x=>x.classList.toggle('on',x.id==='set-'+key));
+  document.querySelectorAll('#setNav button').forEach(b=>b.classList.toggle('on',b.dataset.st===key));
+  S.setTab=key;
+  const h=location.hash.split('/');
+  const want='#/settings/'+key;
+  if(location.hash!==want)history.replaceState(null,'',want);
+}
+
+function renderSettings(){
+  const box=$('settingsBody');if(!box)return;
+  loadPrefs();
+  const wallet=S.wallet?esc(S.wallet):'Not connected';
+  box.innerHTML=`
+    <div class="setHead">
+      <div class="setAv">TT</div>
+      <div>
+        <h1 class="h1" style="font-size:30px">Tony Tran</h1>
+        <div class="mini">tony@marcostocks.com · Member since January 2026</div>
+      </div>
+    </div>
+    <div class="vnav" id="setNav">${SET_TABS.map(t=>
+      `<button data-st="${t[0]}">${esc(t[1])}</button>`).join('')}</div>
+
+    <section class="vsec" id="set-account"><div class="bento">
+      <div class="card setCard span6">
+        <div class="setCardH">Profile</div>
+        ${sRow('Display name','Tony Tran')}
+        ${sRow('Email','tony@marcostocks.com')}
+        ${sRow('Region','Abu Dhabi, UAE')}
+        ${sRow('Member since','January 2026')}
+      </div>
+      <div class="card setCard span6">
+        <div class="setCardH">Funding</div>
+        ${sRow('Wallet',`<span class="num">${wallet}</span>`,'Deposits, settlement and redemption')}
+        ${sRow('Base currency','USDC','All balances and marks are quoted in USDC')}
+        ${sRow('Networks','Solana · Ethereum · Base')}
+        ${sRow('Cash balance',`<span class="num">${money(S.cash)}</span>`)}
+      </div>
+    </div></section>
+
+    <section class="vsec" id="set-verify"><div class="bento">
+      <div class="card setCard kycCard span8">
+        <div class="kycTop">
+          <div>
+            <div class="setK" style="margin:0">Verification status</div>
+            <div class="kycState">Not started</div>
+          </div>
+          <button class="btn p" id="kycStart">Start verification</button>
+        </div>
+        <div class="kycNote">Checks are not running in this preview — the compliance
+          provider is not connected yet.</div>
+        <div class="kycList">${KYC_TIERS.map(t=>`<div class="kycT ${t.state}">
+          <span class="kycDot"></span>
+          <div class="kycTBody">
+            <div class="kycTN">${esc(t.n)}
+              <span class="kycTag ${t.state}">${
+                t.state==='done'?'Complete':t.state==='next'?'Required next':'Locked'}</span></div>
+            <div class="kycTD">${esc(t.d)}</div>
+            <ul class="kycCaps">${t.caps.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+          </div></div>`).join('')}</div>
+      </div>
+      <div class="card setCard span4">
+        <div class="setCardH">Ongoing obligations</div>
+        ${KYC_ONGOING.map(x=>sRow(esc(x[0]),'<span class="setPend">Planned</span>',esc(x[1]))).join('')}
+      </div>
+    </div></section>
+
+    <section class="vsec" id="set-trading"><div class="bento">
+      <div class="card setCard span6">
+        <div class="setCardH">Order defaults</div>
+        ${sToggle('confirmOrders','Confirm before submitting','Show a review step on every order')}
+        ${sRow('Order size preset','25% of balance')}
+      </div>
+      <div class="card setCard span6">
+        <div class="setCardH">Costs</div>
+        ${sRow('Spread','0.15%','Applied to the mid price on every fill')}
+        ${sRow('Protocol fee','0.25%','Spot trades')}
+        ${sRow('Vault fee','5.00%','Taken upfront on a vault deposit')}
+      </div>
+    </div></section>
+
+    <section class="vsec" id="set-alerts"><div class="bento">
+      <div class="card setCard span6">
+        <div class="setCardH">Markets</div>
+        ${sToggle('priceAlerts','Price alerts','Markets on your watchlist')}
+        ${sToggle('vaultAlerts','Vault closings','When a subscription window is about to close')}
+        ${sToggle('agentAlerts','Agent findings','A digest of what your research agents report')}
+      </div>
+      <div class="card setCard span6">
+        <div class="setCardH">Email</div>
+        ${sToggle('statements','Monthly statements','Emailed on the first business day')}
+        ${sToggle('marketing','Product updates','Occasional news about new markets and features')}
+      </div>
+    </div></section>
+
+    <section class="vsec" id="set-appearance"><div class="bento">
+      <div class="card setCard span6">
+        <div class="setCardH">Display</div>
+        <div class="setRow"><div class="setK">Theme
+          <span class="setSub">Applies across the app</span></div>
+          <div class="segc" id="setTheme">
+            <button data-th="dark">Dark</button><button data-th="light">Light</button></div></div>
+        ${sRow('Number format','1,234.56','Comma grouping on every figure')}
+      </div>
+      <div class="card setCard span6">
+        <div class="setCardH">Markets board</div>
+        ${sRow('Layout',`<span class="num">${esc((LAYOUTS[S.layout]||{}).n||'Custom')}</span>`,
+          'Change it from the Markets page')}
+        ${sRow('Capsule editing','Drag and drop','Use Edit on the Markets page')}
+      </div>
+    </div></section>
+
+    <section class="vsec" id="set-security"><div class="bento">
+      <div class="card setCard span6">
+        <div class="setCardH">Sign-in</div>
+        ${sRow('Two-factor authentication','<span class="setPend">Planned</span>','An authenticator app or a hardware key')}
+        ${sRow('Active sessions','1 device','This browser')}
+      </div>
+      <div class="card setCard span6">
+        <div class="setCardH">Access</div>
+        ${sRow('API keys','<span class="setPend">Planned</span>','Read-only keys for portfolio tooling')}
+        ${sRow('Withdrawal address book','<span class="setPend">Planned</span>','Allow-list the addresses you can withdraw to')}
+      </div>
+    </div></section>
+
+    <section class="vsec" id="set-data"><div class="bento">
+      <div class="card setCard span6">
+        <div class="setCardH">This device</div>
+        <div class="setRow"><div class="setK">Reset local data
+          <span class="setSub">Clears your saved layout, agents and preferences</span></div>
+          <button class="btn" id="setReset">Reset</button></div>
+      </div>
+      <div class="card setCard span6">
+        <div class="setCardH">Your records</div>
+        ${sRow('Export account data','<span class="setPend">Planned</span>','Positions and transaction history')}
+        ${sRow('Close account','<span class="setPend">Planned</span>','Redeem or withdraw everything first')}
+      </div>
+    </div></section>
+
+    <div class="foot">Vault tokens are not equity. Marco Labs · Pre-IPO vaults · 2026<br>
+      Verification, monitoring and reporting described here are planned controls, not live services.</div>`;
+
+  $('setNav').querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>setPanel(b.dataset.st));
+  setPanel(SET_TABS.some(t=>t[0]===S.setTab)?S.setTab:'account');
+
+  box.querySelectorAll('[data-pref]').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.pref;
+    S.prefs[k]=!S.prefs[k];savePrefs();
+    b.classList.toggle('on',S.prefs[k]);b.setAttribute('aria-checked',String(!!S.prefs[k]));
+  });
+  const th=$('setTheme');
+  const dark=()=>document.documentElement.getAttribute('data-theme')!=='light';
+  th.querySelectorAll('[data-th]').forEach(b=>b.classList.toggle('on',b.dataset.th===(dark()?'dark':'light')));
+  th.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{
+    if((dark()?'dark':'light')===b.dataset.th)return;
+    $('themeBtn').click();          // one code path for the theme, wherever it is flipped
+  });
+  $('kycStart').onclick=()=>toast('Verification opens once the compliance provider is connected');
+  $('setReset').onclick=()=>{
+    try{['marco.layout','marco.custom','marco.agents','marco.prefs','marco.railw']
+      .forEach(k=>localStorage.removeItem(k))}catch(e){}
+    S.prefs=null;S.agents=null;S.custom=null;S.layout=DEFAULT_LAYOUT;
+    renderSettings();toast('Local data cleared');
+  };
+}
 /* ════════ boot ════════ */
 try{const R=localStorage.getItem('marco.railw');if(R)S.railW=+R}catch(e){}
 try{const L=localStorage.getItem('marco.layout');if(L)S.layout=L;
@@ -6509,12 +6802,13 @@ try{const L=localStorage.getItem('marco.layout');if(L)S.layout=L;
 const startSeg=(location.hash||'#/markets').replace('#/','').split('/');
 const start=startSeg[0];
 setSide('buy');
-go(['markets','trade','portfolio','preipo','agents'].includes(start)?start:'markets');
+go(['markets','trade','portfolio','preipo','agents','settings'].includes(start)?start:'markets');
 if(start==='preipo'&&startSeg[1]&&V(startSeg[1]))openVault(startSeg[1]);
 if(start==='agents'&&startSeg[1])openAgent(startSeg[1]);
+if(start==='settings'&&startSeg[1])setPanel(startSeg[1]);
 feed();setInterval(feed,20000);
 window.__marco={S,MARKETS,VAULTS,openVault,openMarket,go,loadTV,showFallback,renderMarkets,setWL,setMode,
-  renderAgents,openAgent,openBuilder,loadAgents};
+  renderAgents,openAgent,openBuilder,loadAgents,renderSettings,loadPrefs};
 })();
 </script>
 <script>
