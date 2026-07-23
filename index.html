@@ -1195,6 +1195,14 @@ html[data-theme="light"] .pickIt:hover,html[data-theme="light"] .pickIt.hi{backg
 .secLegV{flex:0 0 auto;flex-direction:column;align-items:stretch;gap:9px;
   margin:0;align-self:center;width:142px;max-width:46%}
 .secLegV span{white-space:normal;line-height:1.3;display:flex;gap:7px}
+@container cap (max-width:440px){
+  #p-markets .bento>[data-wg].card>div.secBody2:not(.ch):not(.wEdit){flex-direction:column;gap:6px}
+  #p-markets .secRadarBox{min-height:150px}
+  #p-markets .secLegV{flex-direction:row;flex-wrap:wrap;justify-content:center;
+    align-self:stretch;width:auto;max-width:none;gap:5px 14px;margin:2px 0 0}
+  #p-markets .secLegV span{white-space:nowrap}
+  #p-markets .secLegV u{margin-left:6px}
+}
 .flowCard{margin-top:14px}
 .flowBody{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,330px);
   gap:26px;padding:10px 22px 20px;align-items:center}
@@ -2012,7 +2020,7 @@ const LCIDX={open:1,locked:2,live:4,ipo:3,closed:2,soon:0};
 const RISKS=[
  {h:'You don’t own the stock — you own a vault token',d:'Vault tokens redeem for cash based on the vault’s net IPO proceeds, not the live stock price. You never directly hold the underlying shares unless you elect share delivery at listing.'},
  {h:'The IPO may be delayed, cancelled, or partly allocated',d:'The vault depends on the IPO listing on time, allocation actually being available, and the broker executing. Any of those can be delayed, reduced, or skipped. Undeployed capital is refunded at redemption, but timelines can move.'},
- {h:'Vault cap is the maximum, not the guaranteed allocation',d:'The vault cap is the maximum USDC the vault is sized to deploy. The broker or SPV may only receive a fraction of that allocation from the issuer. Only the deployed portion is exposed to the listing; the undeployed remainder is refunded pro-rata.'},
+ {h:'Vault cap is the maximum, not a promise of allocation',d:'The vault cap is the maximum USDC the vault is sized to deploy. The broker or SPV may only receive a fraction of that allocation from the issuer. Only the deployed portion is exposed to the listing; the undeployed remainder is refunded pro-rata.'},
  {h:'Final redemption may be below what you paid',d:'Net redemption value is calculated after access costs, partner economics, FX, platform fees, and operational expenses. If the stock trades down on listing or if costs are high, redemption can be below your entry price.'},
  {h:'Settlement runs through brokers, banks, and FX',d:'IPO access, FX conversion, share sale, and fund return happen off-chain through partners. Misconduct, failure, or operational delays at any counterparty can affect allocation, settlement, or redemption.'},
  {h:'Smart contracts can fail',d:'Vault deposits, token issuance, and redemption all run through on-chain contracts. Audits reduce risk but don’t eliminate it.'},
@@ -2020,6 +2028,8 @@ const RISKS=[
 
 const VAULTS=[
 {id:'moon',ticker:'MOON',name:'Moonshot AI',nameCn:'月之暗面',sector:'AI / LLM research',hq:'Beijing, China',
+ chainId:'moon-2026',   // backed by a real marco-vault; the rest are illustrative
+
  founded:'2023',ceo:'Yang Zhilin',sponsor:'Goldman Sachs · CICC',ipoValuation:'$20B',vaultSize:4e6,
  entryPrice:1,status:'open',raisedUsd:3.9e6,deadline:'15 October 2026',deadlineShort:'15 Oct',close:'2026-10-15T16:00:00Z',
  chains:'USDC on Solana · Ethereum · Base',
@@ -2207,10 +2217,10 @@ const BUY_WALLETS=['0x71a3…4d02','5kQz…8Wne','0xd419…9c7a','8xKp…9Fma','
  '3nQw…kL72','0x91cd…20aa','7mNp…2Qsx','0x5b71…9a04','0xab12…5f7c'];
 const BUY_CHAINS=['Ethereum','Solana','Base'];
 const SPREAD_BPS=15,FEE_BPS=25,VAULT_FEE_BPS=500;
-/* A vault keeps taking commitments past its guaranteed size, up to this multiple.
-   Everything above the size is a best-efforts request: Marco goes back to the
-   issuer for more allocation, and refunds whatever it can't secure. */
-const OVER_CAP=1.4;
+/* ?demo=1 plays the recorded tour and never touches the chain, so everything
+   chain-aware falls back to the simulation there — otherwise the tour's
+   numbers would depend on a validator being up, and stop being reproducible. */
+const DEMO_MODE=new URLSearchParams(location.search).get('demo')==='1';
 const TFS=['1D','1W','1M','3M','1Y','5Y'];
 const START={cash:250000,pos:{
     smic:{sz:2400,avg:6.78},      // +28%
@@ -2225,11 +2235,19 @@ const START={cash:250000,pos:{
   vpos:{byte:{sub:500000,tok:500000,sh:0},shein:{sub:300000,tok:300000,sh:0}}};
 const S={page:'markets',mkt:MARKETS[0],tf:'1D',side:'buy',cash:0,pos:{},vpos:{},series:[],tab:'orders',
   orders:[],feed:FEED.slice(),elect:'shares',vault:null,cat:'all',q:'',mode:'std',bookTick:0,aboutOpen:false,
-  sort:{k:'capN',dir:-1},watch:{zhipu:1,btc:1,baba:1,tencent:1},feedTab:'All',heroI:0,heroHold:0,feedI:0,buys:[],vflow:null,flowT:0,featId:null,layout:'chartspot',custom:null,chartMkt:null,live:false,
+  sort:{k:'capN',dir:-1},watch:{zhipu:1,btc:1,baba:1,tencent:1},feedTab:'All',heroI:0,heroHold:0,feedI:0,buys:[],vflow:null,flowT:0,featId:null,layout:'overview',custom:null,chartMkt:null,live:false,
   wlOpen:false,prev:0,geo:null,wallet:null};
 function seed(){S.cash=START.cash;S.pos=JSON.parse(JSON.stringify(START.pos));
   S.vpos=JSON.parse(JSON.stringify(START.vpos));S.orders=[];
-  VAULTS.forEach(v=>{if(v.id==='dseek'){v.raisedUsd=1.18e7;v.status='open'}
+  // A chain-backed vault starts at zero rather than at an illustrative figure:
+  // seeding it would paint a number about to be replaced by the real one, and
+  // briefly showing $3.9M raised when the vault holds nothing is worse than
+  // showing nothing until the read lands.
+  //
+  // Except under ?demo=1, where no chain read is ever made — there the seeded
+  // figure is all there is, and zeroing it would empty the recorded tour.
+  VAULTS.forEach(v=>{if(v.chainId&&!DEMO_MODE){v.raisedUsd=0;return}
+    if(v.id==='dseek'){v.raisedUsd=1.18e7;v.status='open'}
     if(v.id==='moon'){v.raisedUsd=3.9e6;v.status='open'}if(v.id==='red')v.raisedUsd=0})}
 seed();
 
@@ -2358,6 +2376,70 @@ function area(cv,data,opt){
       ctx.beginPath();ctx.moveTo(padL,ly);ctx.lineTo(padL+pw,ly);ctx.stroke();ctx.restore()}
   }
   return{X,Y,w,h,pad:padL};
+}
+/* Bucket a close series into OHLC bars. Open and close are the first and last
+   closes in the bucket and the wick is its real high and low, so the candles
+   trace exactly the same path as the line — no invented intrabar detail. Any
+   remainder folds into the final bar, which keeps the last close equal to the
+   last price the rest of the view is quoting. */
+function ohlc(data,target){
+  const per=Math.max(3,Math.round(data.length/(target||48))),out=[];
+  for(let i=0;i+per<=data.length;i+=per){
+    const s=data.slice(i,i+per);
+    out.push({o:s[0],c:s[s.length-1],h:Math.max(...s),l:Math.min(...s)});
+  }
+  const rem=data.length%per;
+  if(rem&&out.length){
+    const s=data.slice(data.length-rem-1),b=out[out.length-1];
+    b.c=s[s.length-1];b.h=Math.max(b.h,...s);b.l=Math.min(b.l,...s);
+  }
+  return out;
+}
+/* Candles, same axis furniture as area(). This is what the advanced view's
+   chart-type toggle switches to whenever TradingView is not carrying the
+   chart — which is any time its symbols do not resolve. */
+function candles(cv,data,opt){
+  opt=opt||{};if(!cv)return null;const F=fitCanvas(cv);if(!F)return null;
+  const{ctx,w,h}=F;if(!data||data.length<6)return null;
+  const full=h>=130&&opt.axis!==false;
+  const padT=opt.pad==null?10:opt.pad, padB=full?20:(opt.pad==null?10:opt.pad);
+  const padL=opt.pad==null?10:opt.pad, padR=full?52:padL;
+  const pw=w-padL-padR, ph=h-padT-padB;
+  const bars=ohlc(data,opt.bars||Math.max(20,Math.min(72,Math.round(pw/13))));
+  if(bars.length<2)return null;
+  const lo=Math.min(...bars.map(b=>b.l)),hi=Math.max(...bars.map(b=>b.h)),rg=(hi-lo)||1;
+  const Y=v=>padT+ph-((v-lo)/rg)*ph;
+  const step=pw/bars.length, bw=Math.max(1.5,Math.min(11,step*.62));
+  if(full){
+    ctx.strokeStyle=cssv('--line');ctx.lineWidth=1;ctx.fillStyle=cssv('--mute');
+    ctx.textAlign='left';ctx.textBaseline='middle';
+    const T=axisTicks(lo,hi,4);
+    T.v.forEach(v=>{const y=Y(v);
+      ctx.beginPath();ctx.moveTo(padL+pw,y);ctx.lineTo(padL+pw+4,y);ctx.stroke();
+      ctx.fillText(axisFmt(v,T.step),padL+pw+8,y)});
+    ctx.textAlign='center';ctx.textBaseline='top';
+    const labs=opt.times||['','','',''];
+    for(let i=0;i<4;i++){const x=padL+pw*i/3;
+      if(labs[i])ctx.fillText(labs[i],Math.min(Math.max(x,padL+12),padL+pw-12),padT+ph+6)}
+  }
+  const up=cssv('--up'),down=cssv('--down');
+  bars.forEach((b,i)=>{
+    const x=Math.round(padL+step*(i+.5))+.5, col=b.c>=b.o?up:down;
+    ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x,Y(b.h));ctx.lineTo(x,Y(b.l));ctx.stroke();
+    const y0=Y(Math.max(b.o,b.c)),y1=Y(Math.min(b.o,b.c));
+    ctx.fillRect(x-bw/2,y0,bw,Math.max(1,y1-y0));
+  });
+  if(opt.dot!==false&&full){       // last close tagged on the axis, as in area()
+    const last=bars[bars.length-1],col=last.c>=last.o?up:down,ly=Y(last.c);
+    const t=axisFmt(last.c,(axisTicks(lo,hi,4)).step),tw=ctx.measureText(t).width+10;
+    ctx.fillStyle=col;ctx.beginPath();ctx.roundRect(padL+pw+4,ly-8,tw,16,2);ctx.fill();
+    ctx.fillStyle=cssv('--bg');ctx.textAlign='left';ctx.textBaseline='middle';
+    ctx.fillText(t,padL+pw+9,ly);
+    ctx.save();ctx.setLineDash([2,3]);ctx.strokeStyle=rgba(col,.5);ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(padL,ly);ctx.lineTo(padL+pw,ly);ctx.stroke();ctx.restore();
+  }
+  return{Y,w,h,pad:padL};
 }
 /* reference-B style row sparkline: discrete bars rather than a line */
 function sparkBars(cv,arr,col){
@@ -2957,16 +3039,16 @@ function drawFill(cv,v,opt){
   ctx.lineWidth=1.9;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
   if(C)ctx.restore();
   if(C){
-    const over=v.raisedUsd>cap+.005;
+    const full=v.raisedUsd>=cap-.005;
     ctx.fillStyle=rgba(col,.16);ctx.beginPath();ctx.arc(lx,ly,6.5,0,7);ctx.fill();
     ctx.fillStyle=col;ctx.beginPath();ctx.arc(lx,ly,3,0,7);ctx.fill();
     ctx.fillStyle=cssv('--bg');ctx.beginPath();ctx.arc(lx,ly,1.2,0,7);ctx.fill();
     // the committed figure rides the end of the curve rather than sitting in a corner
     ctx.font='600 11px "Open Sauce Sans",sans-serif';
-    ctx.fillStyle=over?cssv('--acc'):col;
+    ctx.fillStyle=full?cssv('--acc'):col;
     ctx.textAlign='right';ctx.textBaseline='bottom';
-    ctx.fillText(compact(v.raisedUsd)+' · '+(v.raisedUsd/cap*100).toFixed(0)+'%'
-      +(over?' Oversubscribed':''),lx-11,Math.max(ly-9,padT+11));
+    ctx.fillText(compact(v.raisedUsd)+' · '+Math.min(100,v.raisedUsd/cap*100).toFixed(0)+'%'
+      +(full?' Fully subscribed':''),lx-11,Math.max(ly-9,padT+11));
     return;
   }
   ctx.fillStyle='#E9EAEF';ctx.beginPath();ctx.arc(lx,ly,2.6,0,7);ctx.fill();
@@ -3016,7 +3098,7 @@ function drawPayoff(cv,v){
   valueChip(ctx,padL+pw+4,Y(entry),money(entry),cssv('--mute'));
   ctx.font='600 10px "Open Sauce Sans",sans-serif';ctx.fillStyle=cssv('--ink-2');
   ctx.textAlign='left';ctx.textBaseline='bottom';
-  ctx.fillText('Breakeven '+be.toFixed(2)+'× after the '+(VAULT_FEE_BPS/100).toFixed(2)+'% fee',X(be)+6,padT+11);
+  ctx.fillText('Breakeven '+be.toFixed(2)+'× · net of the '+(VAULT_FEE_BPS/100).toFixed(2)+'% subscription fee',X(be)+6,padT+11);
   ctx.font='500 10px "Open Sauce Sans",sans-serif';ctx.fillStyle=cssv('--mute');
   ctx.textAlign='center';ctx.textBaseline='top';
   ctx.fillText('Listing valuation as a multiple of the '+v.ipoValuation+' offering',padL+pw/2,padT+ph+21);
@@ -3291,10 +3373,13 @@ function tickFlow(){
     const a=S.vflow[v.id];if(!a)return;
     a.shift();
     let amt=0;
-    if(v.status==='open'&&overRoom(v)>0){
+    // A chain-backed vault's subscription total is whatever the program says
+    // it is. Adding simulated commitments to it would invent deposits nobody
+    // made, and the figure is the one thing on the card that must be real.
+    if(v.status==='open'&&gtdRoom(v)>0&&(DEMO_MODE||!v.chainId)){
       const r=Math.abs(Math.sin((S.flowT||0)*1.7+hash(v.id)%97))*0.85+0.15;
       const urgency=v.close&&cdParts(v.close)?1/(1+cdParts(v.close).d/45):.4;
-      amt=Math.min(overRoom(v),Math.pow(r,2.2)*v.vaultSize*FLOW_BASE*(0.5+urgency));
+      amt=Math.min(gtdRoom(v),Math.pow(r,2.2)*v.vaultSize*FLOW_BASE*(0.5+urgency));
       if(amt>0){v.raisedUsd+=amt;touched=true}
     }
     a.push(amt);
@@ -3395,6 +3480,148 @@ function vaultValueSeries(sub,val,key){
   }
   out[0]=sub;out[n-1]=val;
   return out;
+}
+/* ════════════════════════ chain client — lazy, optional ════════════════════════
+
+   Bridges the page to marco-vault on Solana. Everything here degrades to the
+   simulated data the rest of the app already uses, because the page has to keep
+   working in the three situations where there is no chain to talk to:
+
+     - opened straight off disk, with no marco-chain.js beside it;
+     - opened with ?demo=1, where the recorded tour drives the real UI and a
+       live validator would make the numbers non-reproducible;
+     - opened against a vault that only exists as marketing copy.
+
+   A vault is chain-backed only if its VAULTS entry carries `chainId` AND that
+   vault actually exists on the cluster. Everything else stays simulated, and
+   the user is told which they are looking at rather than left to guess.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const CHAIN_SRC = 'marco-chain.js';   // DEMO_MODE is defined in p3-data.js
+
+let chainPromise = null;
+
+/** Load marco-chain.js once. Resolves to null when it is absent or blocked. */
+function loadChain(){
+  if(DEMO_MODE) return Promise.resolve(null);
+  if(chainPromise) return chainPromise;
+  chainPromise=new Promise(res=>{
+    const s=document.createElement('script');
+    s.src=CHAIN_SRC;
+    s.onload=()=>res(window.MarcoChain||null);
+    // Absent bundle is an expected state, not an error: the page is designed
+    // to be opened as a single file with nothing beside it.
+    s.onerror=()=>res(null);
+    document.head.appendChild(s);
+  });
+  return chainPromise;
+}
+
+/** The chain client if one is usable, else null. Never throws. */
+async function chain(){
+  try{ return await loadChain() }catch{ return null }
+}
+
+/** True once a wallet is connected and we are not in the recorded tour. */
+const chainLive=()=>!DEMO_MODE&&!!window.MarcoChain?.connected;
+
+/**
+ * Live state for a vault card, or null to stay on simulated data.
+ * Cached per vault id so re-rendering a card does not re-hit RPC.
+ */
+const chainCache=new Map();
+async function chainVault(v,{fresh=false}={}){
+  if(DEMO_MODE||!v||!v.chainId) return null;
+  if(!fresh&&chainCache.has(v.chainId)) return chainCache.get(v.chainId);
+  const c=await chain();
+  if(!c) return null;
+  let state=null;
+  try{ state=await c.getVault(v.chainId) }catch{ state=null }
+  chainCache.set(v.chainId,state);
+  return state;
+}
+
+/** The connected wallet's on-chain position in a vault, or null. */
+async function chainPosition(v,{fresh=false}={}){
+  if(!chainLive()||!v?.chainId) return null;
+  try{ return await window.MarcoChain.getPosition(v.chainId,{fresh}) }catch{ return null }
+}
+
+function invalidateChain(v){
+  if(v?.chainId) chainCache.delete(v.chainId);
+}
+
+/* ---- live reads --------------------------------------------------------- */
+
+/* The on-chain phase drives what the card offers. `open` accepts deposits and
+   `live` opens redemption, so mapping the wrong phase to either would show a
+   button the program will reject. */
+const PHASE_STATUS={
+  Scheduled:'soon',
+  Funding:'open',
+  Sealed:'locked', Sourcing:'locked', Sourced:'locked', Deployed:'locked',
+  Live:'ipo', Realized:'ipo',
+  Claimable:'live', Winding:'live',
+  Concluded:'closed', Cancelled:'closed', Refunded:'closed',
+};
+
+/**
+ * Copy live state onto the VAULTS entry.
+ *
+ * The card reads `raisedUsd`, `vaultSize` and `status` in twenty places.
+ * Writing chain values onto the entry means every one of those reads becomes
+ * live without touching them — and a vault with no `chainId` keeps its
+ * illustrative figures untouched.
+ *
+ * Returns true when anything changed, so callers can skip a re-render.
+ */
+async function syncChainVault(v,opts){
+  const st=await chainVault(v,opts);
+  if(!st) return false;
+
+  const before=[v.raisedUsd,v.vaultSize,v.status,v.nrv].join('|');
+  v.vaultSize=st.cap;
+  v.raisedUsd=st.totalDeposits;
+  v.status=PHASE_STATUS[st.phase]??v.status;
+  v.chainPhase=st.phase;
+  // The subscription fee the vault was created with, so the subscribe quote
+  // matches what the program will mint rather than a hard-coded default.
+  v.chainFeeBps=st.feeBps;
+
+  // Redemption value per token, straight from the program: the redeemable
+  // pool divided by the tokens entitled to it. The card would otherwise show
+  // the illustrative NAV and quote a payout the chain will not honour.
+  if(st.totalShares>0&&st.redeemable>0) v.nrv=st.redeemable/st.totalShares;
+
+  const pos=await chainPosition(v,opts);
+  if(pos) S.vpos[v.id]={sub:pos.deposited,tok:pos.shares,sh:0};
+
+  return before!==[v.raisedUsd,v.vaultSize,v.status,v.nrv].join('|');
+}
+
+/** Sync every chain-backed vault. Called before the pre-IPO page renders. */
+async function syncChainVaults(opts){
+  const backed=VAULTS.filter(v=>v.chainId);
+  if(!backed.length) return false;
+  const changed=await Promise.all(backed.map(v=>syncChainVault(v,opts).catch(()=>false)));
+  return changed.some(Boolean);
+}
+
+/* ---- wallet ------------------------------------------------------------- */
+
+async function connectWallet(){
+  const c=await chain();
+  if(!c) throw new Error(
+    DEMO_MODE
+      ? 'Wallet connection is disabled during the tour.'
+      : 'Chain support is not loaded. Run `npm run build:chain` and serve the site over HTTP.');
+  return c.connect();
+}
+
+async function disconnectWallet(){
+  const c=await chain();
+  await c?.disconnect();
+  chainCache.clear();
 }
 
 /* ════════ ticker tape — page-aware ════════ */
@@ -3988,15 +4215,12 @@ function renderSectorRadar(){
    12 columns and its widgets share a height, which is what makes the board tile
    with no holes — dense packing alone cannot fill a gap left by mismatched
    heights, because only a later widget that happens to fit can backfill it. */
-const DEFAULT_LAYOUT='chartspot';
+const DEFAULT_LAYOUT='overview';
 const LAYOUTS={
-  overview:{n:'Overview',d:'Every widget, balanced across the board.',
-    w:[['pulse',5,4],['index',7,4],
-       ['chart',8,5],['summary',4,5],
-       ['portfolio',4,4],['social',4,4],['active',4,4],
-       ['gainers',4,3],['losers',4,3],['sectors',4,3],
-       ['weight',4,4],['volshare',4,4],['hist',4,4],
-       ['radar',4,4],['retsince',4,4],['pipeline',4,4],
+  overview:{n:'Overview',d:'Chart, your book and the whole board at a glance.',
+    w:[['chart',6,5],['pulse',3,5],['portfolio',3,5],
+       ['weight',3,4],['radar',3,4],['social',6,4],
+       ['pipeline',3,4],['index',6,4],['hist',3,4],
        ['table',12,9]]},
   trading:{n:'Stock Trading',d:'Enter and exit quickly with price action up front.',
     w:[['chart',8,5],['summary',4,5],
@@ -4905,7 +5129,7 @@ function showFallback(){
   let tries=0;
   const draw=()=>{const cv=$('fallChart');if(!cv)return;
     if((!cv.clientHeight||!cv.clientWidth)&&tries++<40)return setTimeout(draw,50);
-    area(cv,S.series,{pad:14})};
+    (S.ctype==='line'?area:candles)(cv,S.series,{pad:14})};
   draw();setTimeout(draw,80);
 }
 /* Technicals reading — derived only from live data we actually have:
@@ -5271,7 +5495,7 @@ function closeTicket(){$('tick').classList.remove('on');$('scrim').classList.rem
 function spotVal(){return Object.keys(S.pos).reduce((a,id)=>{const m=M(id);return a+(m?S.pos[id].sz*m.px:0)},0)}
 function spotCost(){return Object.keys(S.pos).reduce((a,id)=>a+S.pos[id].sz*S.pos[id].avg,0)}
 function vaultVal(){return Object.keys(S.vpos).reduce((a,id)=>{const p=S.vpos[id],v=V(id);
-  return a+p.tok*(v&&v.nrv?v.nrv:1)+p.sh*(v&&v.ipoPx?v.ipoPx:0)+(p.over||0)},0)}
+  return a+p.tok*(v&&v.nrv?v.nrv:1)+p.sh*(v&&v.ipoPx?v.ipoPx:0)},0)}
 function renderPortfolio(){
   const sv=spotVal(),vv=vaultVal(),eq=S.cash+sv+vv,pnl=sv-spotCost(),u=pnl>=0;
   $('pfEq').textContent=money(eq);
@@ -5281,16 +5505,18 @@ function renderPortfolio(){
   cp.textContent=(u?'+':'')+pc.toFixed(2)+'%';
   $('pfCash').textContent=money(S.cash);$('pfSpot').textContent=money(sv);$('pfVault').textContent=money(vv);
   const pe=$('pfPnl');pe.textContent=smoney(pnl);pe.className='num '+(u?'up':'dn');
-  // equity against cost basis, plus the two breakdown charts
+  // equity against cost basis, plus the two breakdown charts. Vaults contribute
+  // their subscription net of the fee — the same basis the vault position
+  // is marked against, so the two views cannot disagree.
   drawEquity($('pfChart'),series('equity',eq,'1M'),S.cash+spotCost()+
-    Object.keys(S.vpos).reduce((a,id)=>a+(S.vpos[id].sub||0),0));
+    Object.keys(S.vpos).reduce((a,id)=>a+vaultCost(S.vpos[id]),0));
   const held=Object.keys(S.pos).filter(id=>S.pos[id].sz>0&&M(id));
   drawDiverging($('pfPnlChart'),held.map(id=>{const mk=M(id),q=S.pos[id];
     return{k:mk.sym.split('-')[0],v:(mk.px-q.avg)*q.sz}}).sort((a,b)=>b.v-a.v));
   const rows=held.map(id=>{const mk=M(id);return{k:mk.sym.split('-')[0],v:S.pos[id].sz*mk.px}})
     .concat(Object.keys(S.vpos).filter(id=>V(id)&&(S.vpos[id].tok>0||S.vpos[id].sh>0||S.vpos[id].over>0))
       .map(id=>{const v=V(id),q=S.vpos[id];
-        return{k:'m'+v.ticker,v:q.tok*(v.nrv||1)+q.sh*(v.ipoPx||0)+(q.over||0)}}))
+        return{k:'m'+v.ticker,v:q.tok*(v.nrv||1)+q.sh*(v.ipoPx||0)}}))
     .concat([{k:'Cash',v:S.cash}]).sort((a,b)=>b.v-a.v);
   const tot=rows.reduce((a,r)=>a+r.v,0)||1;
   // donut: five largest holdings, the tail rolled into one slice so the ring stays legible
@@ -5313,7 +5539,7 @@ function renderPortfolio(){
       <td class="r num ${up?'up':'dn'}">${smoney(pl)} <span style="opacity:.7">(${up?'+':''}${pc.toFixed(2)}%)</span></td></tr>`});
   $('pfPos').innerHTML=html||`<tr><td colspan="6" style="text-align:center;color:var(--mute);padding:32px">No spot positions</td></tr>`;
   $('pfPos').querySelectorAll('[data-go]').forEach(r=>r.onclick=()=>openMarket(r.dataset.go));
-  const vk=Object.keys(S.vpos).filter(id=>{const p=S.vpos[id];return p.tok>0||p.sh>0||p.over>0});
+  const vk=Object.keys(S.vpos).filter(id=>{const p=S.vpos[id];return p.tok>0||p.sh>0});
   $('pfVaults').innerHTML=vk.length?vk.map(id=>{const v=V(id),p=S.vpos[id];if(!v)return'';
     return `<tr data-v="${id}" tabindex="0" role="link"><td><span class="nm">${esc(v.name)}</span> <span class="mini">m${v.ticker}</span></td>
       <td><span class="badge${v.status==='ipo'||v.status==='live'?' live':''}">${STATUS[v.status].l}</span></td>
@@ -5360,7 +5586,7 @@ function renderFeatPick(){
       <span class="pickCol num">${v.ipoValuation}</span>
       <span class="pickCol num">${compact(v.vaultSize)}</span>
       <span class="pickCol pickFill"><i class="pickTrack"><b style="width:${raisedPct(v)}%"></b></i>
-        <span class="num${isOver(v)?' over':''}">${subPct(v).toFixed(0)}%</span></span>
+        <span class="num">${subPct(v).toFixed(0)}%</span></span>
       <span class="pickCol num" style="color:var(--mute)">${hasClock(v)?cdShort(v.close):'—'}</span>
     </div>`).join('')
     :'<div class="pickEmpty">No vault matches that.</div>');
@@ -5392,7 +5618,7 @@ function wireFeatPick(){
 }
 function renderMine(){
   const box=$('vMine');if(!box)return;
-  const held=VAULTS.filter(v=>{const p=S.vpos[v.id];return p&&(p.sub||p.tok||p.sh||p.over)});
+  const held=VAULTS.filter(v=>{const p=S.vpos[v.id];return p&&(p.sub||p.tok||p.sh)});
   const open=VAULTS.filter(v=>v.status==='open').length;
   if(!held.length){
     box.innerHTML=`<div class="ch"><span class="ct">Your Vaults</span></div>
@@ -5404,11 +5630,12 @@ function renderMine(){
   const rows=held.map(v=>{
     const p=S.vpos[v.id];
     const nav=v.nrv||v.entryPrice||1;
-    const val=(p.tok||0)*nav+(p.sh||0)*(v.ipoPx||0)+(p.over||0);
-    return{v,sub:p.sub||0,val,pl:val-(p.sub||0)};
+    const val=(p.tok||0)*nav+(p.sh||0)*(v.ipoPx||0);
+    return{v,sub:p.sub||0,cost:vaultCost(p),val,pl:val-vaultCost(p)};
   }).sort((a,b)=>b.val-a.val);
   const sub=rows.reduce((a,r)=>a+r.sub,0),val=rows.reduce((a,r)=>a+r.val,0);
-  const pl=val-sub,u=pl>=0,pc=sub?pl/sub*100:0;
+  const cost=rows.reduce((a,r)=>a+r.cost,0);
+  const pl=val-cost,u=pl>=0,pc=cost?pl/cost*100:0;
   box.innerHTML=`<div class="ch"><span class="ct">Your Vaults</span>
       <a class="lnk" href="#/portfolio">Portfolio</a></div>
     <div class="posBody">
@@ -5474,7 +5701,7 @@ function tickFlowUI(){
     drawFill($('featCh'),feat,{capsule:true});
     const k=document.querySelector('.fhK');
     if(k)k.innerHTML=`<span class="mini">${compact(feat.raisedUsd)} of ${compact(feat.vaultSize)} committed</span>
-      <span class="mini num${isOver(feat)?' over':''}">${subPct(feat).toFixed(0)}%${isOver(feat)?' · oversubscribed':''}</span>`;
+      <span class="mini num">${subPct(feat).toFixed(0)}%</span>`;
   }
 
 }
@@ -5483,18 +5710,38 @@ const hasClock=v=>!!(v.close&&cdParts(v.close));
 const defaultFeatured=()=>VAULTS.filter(v=>v.status==='open'&&hasClock(v))
   .sort((a,b)=>new Date(a.close)-new Date(b.close))[0]||VAULTS[0]||null;
 const featuredVault=()=>(S.featId&&V(S.featId))||defaultFeatured();
-/* subscription can run past the vault size — these keep the two ideas apart:
-   what has been committed vs what allocation is actually guaranteed */
-const subPct=v=>v.raisedUsd/v.vaultSize*100;              // uncapped
-const isOver=v=>v.raisedUsd>v.vaultSize+.005;
-const gtdRoom=v=>Math.max(0,v.vaultSize-v.raisedUsd);      // still guaranteed
-const overRoom=v=>Math.max(0,v.vaultSize*OVER_CAP-v.raisedUsd); // total still accepted
-/* split an order into the part that lands inside the vault size and the part
-   that is a best-efforts request above it */
-function splitOrder(v,amt){
-  const g=Math.min(amt,gtdRoom(v));
-  return{gtd:g,over:Math.max(0,amt-g)};
+/* Subscription stops at the vault cap, which is what marco-vault actually
+   does: `deposit` accepts min(intent, cap remaining, per-address remaining)
+   and mints claim tokens 1:1 on the net. There is no oversubscription tier and
+   no best-efforts bucket on-chain, so there is none here — a subscriber who
+   gets in gets the allocation. */
+const subPct=v=>Math.min(100,v.raisedUsd/v.vaultSize*100);
+/* The protocol fee is a front-end load on the subscription: you commit the
+   full amount, the net (amount less the fee) is deployed to the offering and
+   mints claim tokens 1:1, and the fee is settled when the vault settles — it is
+   never charged again on the redemption proceeds. 20,000 in at 500 bps deploys
+   a 19,000 net subscription; the 1,000 fee is realised at settlement. A
+   chain-backed vault reports its own rate, so the quote matches it. */
+const feeBpsOf=v=>v.chainFeeBps??VAULT_FEE_BPS;
+function entrySplit(v,gross){
+  const fee=gross*feeBpsOf(v)/10000;
+  return{fee,net:gross-fee};
 }
+/* Cost basis for a vault position: what the tokens actually cost, which is the
+   subscription net of the fee. The fee is a front-end load and is not
+   recoverable, but it is a transaction cost, not a mark-to-market move —
+   measuring P&L against the gross subscription opens every fresh position at
+   minus the fee, which is not what the holding has done. The fee is disclosed
+   on its own line instead of being buried in an unrealised loss. */
+const vaultCost=p=>Math.max(0,(p.sub||0)-(p.fee||0));
+/* Chain reads give gross deposited and net shares; the difference is the fee. */
+const feeFromChain=(v,deposited,shares)=>
+  Math.max(0,deposited-shares*(v.entryPrice||1));
+const feeNote=v=>{const p=(feeBpsOf(v)/100).toFixed(2);
+  return `A ${p}% fee applies to your subscription and is settled when the vault settles. `
+    +`Your net subscription — the amount less ${p}% — is what earns; redemption pays it out in full, `
+    +`with no further fee on the proceeds.`};
+const gtdRoom=v=>Math.max(0,v.vaultSize-v.raisedUsd);
 function renderVaults(){
   const tvl=VAULTS.reduce((a,v)=>a+v.raisedUsd,0);
   const open=VAULTS.filter(v=>v.status==='open').length;
@@ -5529,8 +5776,7 @@ function renderVaults(){
     </div>`}
     <div class="fstats">${[
       ['Valuation',feat.ipoValuation,'pre-money'],
-      ['Vault size',compact(feat.vaultSize),isOver(feat)
-        ?compact(feat.raisedUsd-feat.vaultSize)+' above cap':compact(gtdRoom(feat))+' room left'],
+      ['Vault size',compact(feat.vaultSize),compact(gtdRoom(feat))+' room left'],
       ['Subscribed',subPct(feat).toFixed(0)+'%',compact(feat.raisedUsd)+' committed']
     ].map(x=>`<div class="hstat"><div class="hk">${x[0]}</div>
       <div class="hv num">${x[1]}</div>
@@ -5560,7 +5806,7 @@ function renderVaults(){
       <span><span class="badge${v.status==='open'?' live':''}">${STATUS[v.status].l}</span></span>
       <span><span style="display:flex;align-items:center;gap:10px">
         <span class="bar" style="flex:1"><span class="barF acc" style="width:${p}%"></span></span>
-        <span class="mini num${isOver(v)?' over':''}">${subPct(v).toFixed(0)}%</span></span></span>
+        <span class="mini num">${subPct(v).toFixed(0)}%</span></span></span>
       <span class="r num${v.close&&cdParts(v.close)?'':' mini'}"${v.close&&cdParts(v.close)?` data-cd="${v.close}"`:''}>${
         v.close&&cdParts(v.close)?cdShort(v.close):'—'}</span></div>`}).join('');
   const sc=sectorCounts();
@@ -5589,25 +5835,25 @@ function heroStats(v){
   return[
     ['Valuation',v.ipoValuation,'pre-money'],
     ['Vault size',compact(v.vaultSize),compact(v.raisedUsd)+' committed'],
-    ['Subscribed',subPct(v).toFixed(0)+'%',isOver(v)
-      ?compact(v.raisedUsd-v.vaultSize)+' above cap':compact(gtdRoom(v))+' room left'],
+    ['Subscribed',subPct(v).toFixed(0)+'%',compact(gtdRoom(v))+' room left'],
     ['Closes in',v.close&&cdParts(v.close)?cdShort(v.close):'—',esc(v.deadlineShort||v.deadline||'')]];
 }
 /* Your position — mirrors Morpho's tab; empty state when nothing is held */
 function positionHTML(v){
   const p=S.vpos[v.id];
-  if(!p||(!p.sub&&!p.tok&&!p.sh&&!p.over))
+  if(!p||(!p.sub&&!p.tok&&!p.sh))
     return `<div class="tempty">No position in this vault yet.</div>`;
   const nav=v.nrv||v.entryPrice||1;
-  const val=(p.tok||0)*nav+(p.sh||0)*(v.ipoPx||0)+(p.over||0);
-  const pl=val-(p.sub||0), u=pl>=0;
+  const val=(p.tok||0)*nav+(p.sh||0)*(v.ipoPx||0);
+  const cost=vaultCost(p);
+  const pl=val-cost, u=pl>=0;
   const rows=[
     ['Subscribed',money(p.sub||0)],
+    ...(p.fee?[['Entry fee',money(p.fee)]]:[]),
     ['Vault tokens',qty(p.tok||0,0)+' m'+v.ticker],
-    ...(p.over?[['Pending allocation',money(p.over)+' · best-efforts']]:[]),
     ...(p.sh?[['Shares taken',qty(p.sh,0)]]:[]),
     ['Indicative value',money(val)],
-    ['Unrealised',smoney(pl)+' ('+(p.sub?((u?'+':'')+(pl/p.sub*100).toFixed(2)):'0.00')+'%)'],
+    ['Unrealised',smoney(pl)+' ('+(cost?((u?'+':'')+(pl/cost*100).toFixed(2)):'0.00')+'%)'],
     ['Status',STATUS[v.status].l]];
   return `<div class="g4" style="padding:4px 0 0">${rows.map(r=>
     `<div class="cell"><div class="cellK">${r[0]}</div>
@@ -5669,7 +5915,7 @@ function openVault(id){
         <section class="vsec" id="s-outlook">
           <div class="vsub" style="border-top:none;padding-top:0;margin-top:0">Listing Scenarios</div>
           <div class="card chc"><div class="ch"><span class="ct">Value Per Vault Token</span>
-              <span class="cs">Par ${money(v.entryPrice)} · net of the ${(VAULT_FEE_BPS/100).toFixed(2)}% fee</span></div>
+              <span class="cs">Par ${money(v.entryPrice)} · net of the ${(VAULT_FEE_BPS/100).toFixed(2)}% subscription fee</span></div>
             <div class="chWrap"><canvas id="scnCh"></canvas></div></div>
           <div class="tscroll" style="margin-top:14px"><table><thead><tr>
             <th scope="col">Case</th><th scope="col" class="r">Listing vs offering</th>
@@ -5737,7 +5983,7 @@ function openVault(id){
         <section class="vsec" id="s-risk">
           <div class="vsub">Payoff At Listing</div>
           <div class="card chc"><div class="ch"><span class="ct">Value Per Vault Token</span>
-              <span class="cs">Net of the ${(VAULT_FEE_BPS/100).toFixed(2)}% protocol fee</span></div>
+              <span class="cs">Net of the ${(VAULT_FEE_BPS/100).toFixed(2)}% subscription fee</span></div>
             <div class="chWrap"><canvas id="payCh"></canvas></div></div>
           <div class="vsub">Risk Factors</div>
           <div class="vlist">${RISKS.map((r,i)=>
@@ -5763,9 +6009,8 @@ function openVault(id){
           <div class="cdHead"><span class="cdName">${esc(v.name)}</span>
             <button class="shareBtn" id="vShare" aria-label="Share ${esc(v.name)}" title="Copy link to this vault">${SHARE_SVG()}</button></div>
           <div class="mini">Subscription closes in</div><div class="cdn" data-cdfull="${v.close}"></div>
-          ${v.raisedUsd>0?`<div class="cdSub num${isOver(v)?' over':''}">${compact(v.raisedUsd)} of ${compact(v.vaultSize)} committed (${subPct(v).toFixed(0)}%)</div>
-          <div class="vrChart"><canvas id="fillCh"></canvas></div>
-          ${isOver(v)?`<div class="cdNote">Oversubscribed · commitments above ${compact(v.vaultSize)} are best-efforts</div>`:''}`
+          ${v.status!=='soon'?`<div class="cdSub num">${compact(v.raisedUsd)} of ${compact(v.vaultSize)} committed (${subPct(v).toFixed(0)}%)</div>
+          ${v.raisedUsd>0?`<div class="vrChart"><canvas id="fillCh"></canvas></div>`:''}`
           :`<div class="cdSub mute num">Not yet open · ${compact(v.vaultSize)} cap</div>`}</div>`:''}
 
         <div class="vrsec" id="vBuy"></div>
@@ -5888,10 +6133,9 @@ function termsRows(v){
     ['User net return',v.netReturn],['Redemption status','Live']);
   rows.push(['Committed',`${compact(v.raisedUsd)} (${p.toFixed(1)}%)`],['Settlement',v.chains],
     ['Ethereum vault','0xcee0…c36fb'],['Base vault','0x3ED4…6d8a7'],['Solana vault','CvNM…TJzb'],
-    ['Deposit deadline',v.deadline],['Protocol fee',(VAULT_FEE_BPS/100).toFixed(2)+'% flat'],
-    ['Guaranteed allocation',money(v.vaultSize,0)+' — the vault size'],
-    ['Oversubscription limit',money(v.vaultSize*OVER_CAP,0)+` (${OVER_CAP.toFixed(2)}× the vault size)`],
-    ['Above the vault size','Best-efforts. Marco seeks further allocation from the issuer and refunds in USDC whatever it cannot secure.'],
+    ['Deposit deadline',v.deadline],['Protocol fee',(feeBpsOf(v)/100).toFixed(2)+'% of subscription, settled at settlement'],
+    ['Vault cap',money(v.vaultSize,0)+' — a hard limit; subscription closes there'],
+    ['Allocation','Every accepted subscription is allocated in full. A deposit that would exceed the cap is partially filled, and the unfilled portion never leaves your wallet.'],
     ['Audit','0xMacro · Marco A-01']);
   return rows;
 }
@@ -5902,11 +6146,11 @@ function electionHTML(v,pos){
       <div style="font-size:17px;color:var(--ink-2);line-height:1.55;margin-bottom:20px;max-width:640px">
         ${esc(v.name)} has listed. Convert your m${v.ticker} vault tokens into a real ${esc(v.name)} share position —
         the broker delivers the shares off-chain — or keep them to redeem for USDC once the sale settles.
-        Converting burns the tokens and pays the flat ${(VAULT_FEE_BPS/100).toFixed(2)}% protocol fee in USDC.</div>
+        Converting burns the tokens and pays a ${(VAULT_FEE_BPS/100).toFixed(2)}% share-delivery fee in USDC.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
         <div class="opt ${S.elect==='shares'?'on':''}" data-o="shares" role="radio" tabindex="0" aria-checked="${S.elect==='shares'}">
           <div class="optH"><span class="chk"></span>Take shares</div>
-          <div class="optD">Real spot position delivered by the broker. ${(VAULT_FEE_BPS/100).toFixed(2)}% fee in USDC.</div></div>
+          <div class="optD">Real spot position delivered by the broker. ${(VAULT_FEE_BPS/100).toFixed(2)}% delivery fee in USDC.</div></div>
         <div class="opt ${S.elect==='cash'?'on':''}" data-o="cash" role="radio" tabindex="0" aria-checked="${S.elect==='cash'}">
           <div class="optH"><span class="chk"></span>Wait for cash</div>
           <div class="optD">Keep tokens and redeem pro-rata USDC when redemption opens.</div></div></div>
@@ -5961,43 +6205,72 @@ function renderBuy(v){
           <span class="depUnit">${usdc()}<button id="bMax">MAX</button></span></div>
       </div>
       <button class="cta" id="bCta">Subscribe</button>
-      <div class="row" style="margin-top:16px"><span>Guaranteed allocation</span><b class="num" id="bGtd">—</b></div>
-      <div class="row"><span>Best-efforts above cap</span><b class="num" id="bOver">—</b></div>
+      <div class="row" style="margin-top:16px"><span>Fee (${(feeBpsOf(v)/100).toFixed(2)}%) · at settlement</span><b class="num" id="bFee">—</b></div>
+      <div class="row"><span>Net subscription</span><b class="num" id="bNet">—</b></div>
+      <div class="row"><span>You receive</span><b class="num" id="bGtd">—</b></div>
       <div class="row"><span>Indicative NAV</span><b class="num">${money(v.entryPrice)}</b></div>
-      <div class="row"><span>Protocol fee</span><b class="num">${(VAULT_FEE_BPS/100).toFixed(2)}% at exit</b></div>
-      <div class="row"><span>Guaranteed room left</span><b class="num">${compact(gtdRoom(v))}</b></div>
-      <div class="mini" id="bNote" style="margin-top:14px;line-height:1.5">Deposit USDC and receive vault tokens 1:1 representing your pro-rata share. The flat ${(VAULT_FEE_BPS/100).toFixed(2)}% fee is charged on exit, not on deposit.</div>`;
+      <div class="row"><span>Room left</span><b class="num">${compact(gtdRoom(v))}</b></div>
+      <div class="mini" id="bNote" style="margin-top:14px;line-height:1.5">${feeNote(v)}</div>`;
     const upd=()=>{const n=parseFloat($('bAmt').value)||0;
-      const acc=Math.max(0,Math.min(n,overRoom(v),S.cash)),sp=splitOrder(v,acc);
+      const acc=Math.max(0,Math.min(n,gtdRoom(v),S.cash));
+      const {fee,net}=entrySplit(v,acc);
       const us=$('bAmtUsd');if(us)us.textContent=n>0?money(n,0):'';
-      $('bGtd').textContent=qty(Math.round(sp.gtd),0)+` m${v.ticker}`;
-      const oe=$('bOver');
-      oe.textContent=sp.over>0?money(sp.over,0):'—';
-      oe.classList.toggle('warn',sp.over>0);
+      // The quote must be what the program will actually mint: tokens are
+      // minted 1:1 against the NET subscription, so quoting the gross would
+      // promise more than the deposit delivers.
+      $('bGtd').textContent=qty(Math.round(net),0)+` m${v.ticker}`;
+      $('bFee').textContent=fee>0?money(fee,0):'—';
+      const bn=$('bNet');if(bn)bn.textContent=net>0?money(net,0):'—';
       $('bCta').textContent=acc>0?`Subscribe ${money(acc,0)}`:'Subscribe';
       const note=$('bNote');
       if(n>acc+.005)
-        note.innerHTML=`<b style="color:var(--ink)">Capped at ${money(acc,0)}</b> — limited by ${acc>=overRoom(v)-.005?'the oversubscription limit':'your USDC balance'}.`;
-      else if(sp.over>0)
-        note.innerHTML=`<b style="color:var(--ink)">${money(sp.gtd,0)} is guaranteed.</b> The remaining ${money(sp.over,0)} is a request above the ${compact(v.vaultSize)} vault size — Marco will seek further allocation from the issuer and refund in USDC whatever it cannot secure.`;
+        note.innerHTML=`<b style="color:var(--ink)">Capped at ${money(acc,0)}</b> — limited by ${acc>=gtdRoom(v)-.005?'the room left in the vault':'your USDC balance'}.`;
       else
-        note.innerHTML=`Deposit USDC and receive vault tokens 1:1 representing your pro-rata share. The flat ${(VAULT_FEE_BPS/100).toFixed(2)}% fee is charged on exit, not on deposit.`};
+        note.innerHTML=feeNote(v)};
     $('bAmt').oninput=upd;
-    $('bMax').onclick=()=>{$('bAmt').value=Math.floor(Math.min(gtdRoom(v)||overRoom(v),S.cash));upd()};
+    $('bMax').onclick=()=>{$('bAmt').value=Math.floor(Math.min(gtdRoom(v),S.cash));upd()};
     upd();
-    $('bCta').onclick=()=>{
+    $('bCta').onclick=async()=>{
       const want=parseFloat($('bAmt').value)||0;
       if(!(want>=100))return toast('Minimum subscription is $100.');
-      const acc=Math.min(want,overRoom(v),S.cash);
-      if(acc<=0)return toast(overRoom(v)<=0?'Vault is closed to further commitments.':'Not enough USDC.');
-      const sp=splitOrder(v,acc);
+
+      // Chain-backed vault: the deposit is signed by the holder's own wallet
+      // and the program decides what is accepted. Nothing is predicted here —
+      // the resulting position is read back from the BuyerState PDA.
+      if(chainLive()&&v.chainId){
+        const st=await chainVault(v,{fresh:true});
+        if(st&&st.acceptingDeposits){
+          const cta=$('bCta'),label=cta.textContent;
+          cta.disabled=true;cta.textContent='Confirm in your wallet…';
+          try{
+            const {position}=await window.MarcoChain.deposit(v.chainId,want);
+            invalidateChain(v);
+            S.vpos[v.id]={sub:position.deposited,tok:position.shares,sh:0,
+              fee:feeFromChain(v,position.deposited,position.shares)};
+            toast(`Subscribed ${money(position.deposited,0)} · ${qty(Math.round(position.shares),0)} m${v.ticker}`);
+            renderVaults();openVault(v.id);renderPortfolio();
+          }catch(e){
+            toast(`Deposit failed · ${e.message}`);
+            cta.disabled=false;cta.textContent=label;
+          }
+          return;
+        }
+        if(st)return toast(`Vault is ${st.phase} on-chain — deposits are closed.`);
+      }
+
+      // Mirrors the program's partial fill: accept up to the cap, allocate all
+      // of it. Whatever is taken from the wallet is allocated 1:1 — there is
+      // no portion left pending.
+      // Mirrors the program: accept up to the cap, deploy the net subscription
+      // (amount less the fee) and mint 1:1 against it; the fee settles later.
+      const acc=Math.min(want,gtdRoom(v),S.cash);
+      if(acc<=0)return toast(gtdRoom(v)<=0?'Vault is fully subscribed.':'Not enough USDC.');
+      const {fee,net}=entrySplit(v,acc);
       S.cash-=acc;v.raisedUsd+=acc;
-      const p=S.vpos[v.id]||(S.vpos[v.id]={sub:0,tok:0,sh:0,over:0});
-      p.sub+=acc;p.tok+=sp.gtd;p.over=(p.over||0)+sp.over;
-      if(v.raisedUsd>=v.vaultSize*OVER_CAP-.005)v.status='locked';
-      toast(sp.over>0
-        ?`Subscribed ${money(acc,0)} · ${money(sp.gtd,0)} guaranteed, ${money(sp.over,0)} pending allocation`
-        :`Subscribed ${money(acc,0)} for ${qty(Math.round(sp.gtd),0)} m${v.ticker}`);
+      const p=S.vpos[v.id]||(S.vpos[v.id]={sub:0,tok:0,sh:0,fee:0});
+      p.sub+=acc;p.tok+=net;p.fee=(p.fee||0)+fee;
+      if(v.raisedUsd>=v.vaultSize-.005)v.status='locked';
+      toast(`Subscribed ${money(acc,0)} for ${qty(Math.round(net),0)} m${v.ticker}`);
       renderVaults();openVault(v.id);renderPortfolio()};
   }else if(v.status==='live'){
     box.innerHTML=`<div class="ct" style="margin-bottom:14px">Redeem</div>
@@ -6007,17 +6280,42 @@ function renderBuy(v){
         <div class="inp"><input id="bAmt" type="number" class="num" min="0" value="${Math.round(pos.tok)}" aria-label="Tokens to redeem">
           <span>m${v.ticker}</span><button id="bMax">Max</button></div></div>
       <div class="row"><span>Settlement NAV</span><b class="num">${money(v.nrv)} · final</b></div>
-      <div class="row"><span>Protocol fee</span><b class="num">${(VAULT_FEE_BPS/100).toFixed(2)}% · already in NAV</b></div>
+      <div class="row"><span>Protocol fee</span><b class="num">Taken at deposit · none here</b></div>
       <div class="row"><span>You receive</span><b class="num" id="bRecv">—</b></div>
       <div class="row tot"><span>Settlement</span><b style="font-size:13px">USDC · Ethereum</b></div>
       <button class="cta" id="bCta">Redeem</button>
-      <div class="mini" style="margin-top:12px;line-height:1.5">Burn your tokens and receive USDC at the final settlement value of ${money(v.nrv)}, which is net of the flat ${(VAULT_FEE_BPS/100).toFixed(2)}% protocol fee.</div>`;
+      <div class="mini" style="margin-top:12px;line-height:1.5">Burn your tokens and receive USDC at the final settlement value of ${money(v.nrv)}. Redemption is a pure pass-through — the ${(feeBpsOf(v)/100).toFixed(2)}% subscription fee is settled at settlement and nothing further is charged here.</div>`;
     const upd=()=>{const n=parseFloat($('bAmt').value)||0;$('bRecv').textContent=money(n*v.nrv);
       $('bCta').textContent=n>0?`Redeem for ${money(n*v.nrv,0)}`:'Redeem'};
     $('bAmt').oninput=upd;$('bMax').onclick=()=>{$('bAmt').value=Math.round(pos.tok);upd()};upd();
-    $('bCta').onclick=()=>{const n=parseFloat($('bAmt').value)||0,p=S.vpos[v.id];
-      if(!p||p.tok<=0)return toast('You don’t hold tokens in this vault.');
+    $('bCta').onclick=async()=>{const n=parseFloat($('bAmt').value)||0,p=S.vpos[v.id];
       if(!(n>0))return toast('Enter an amount above zero.');
+
+      // Chain-backed: burn real claim tokens for real USDC, holder-signed.
+      if(chainLive()&&v.chainId){
+        const st=await chainVault(v,{fresh:true});
+        if(st&&st.claimable){
+          const cta=$('bCta'),label=cta.textContent;
+          cta.disabled=true;cta.textContent='Confirm in your wallet…';
+          try{
+            const before=await chainPosition(v,{fresh:true});
+            const {position}=await window.MarcoChain.claim(v.chainId,n);
+            invalidateChain(v);
+            S.vpos[v.id]={sub:position.deposited,tok:position.shares,sh:0,
+              fee:feeFromChain(v,position.deposited,position.shares)};
+            const paid=position.redeemed-(before?.redeemed??0);
+            toast(`Redeemed ${Math.round(n).toLocaleString()} m${v.ticker} for ${money(paid)}`);
+            openVault(v.id);renderPortfolio();
+          }catch(e){
+            toast(`Redemption failed · ${e.message}`);
+            cta.disabled=false;cta.textContent=label;
+          }
+          return;
+        }
+        if(st)return toast(`Vault is ${st.phase} on-chain — redemption is not open.`);
+      }
+
+      if(!p||p.tok<=0)return toast('You don’t hold tokens in this vault.');
       if(n>p.tok+1e-6)return toast('You don’t hold that many tokens.');
       const out=n*v.nrv;p.tok-=n;S.cash+=out;
       toast(`Redeemed ${Math.round(n).toLocaleString()} m${v.ticker} for ${money(out)}`);
@@ -6025,7 +6323,7 @@ function renderBuy(v){
   }else{
     box.innerHTML=`<div class="ct" style="margin-bottom:14px">Your Position</div>
       <div class="row" style="padding-top:0"><span>Status</span><b>${st.cta}</b></div>
-      <div class="row"><span>Protocol fee</span><b class="num">${(VAULT_FEE_BPS/100).toFixed(2)}% at exit</b></div>
+      <div class="row"><span>Entry fee</span><b class="num">${(feeBpsOf(v)/100).toFixed(2)}% at deposit</b></div>
       <div class="row"><span>Your tokens</span><b class="num">${qty(Math.round(pos.tok),0)} m${v.ticker}</b></div>
       <div class="row"><span>Shares taken</span><b class="num">${pos.sh?pos.sh.toLocaleString():'—'}</b></div>
       <div class="row"><span>You subscribed</span><b class="num">${money(pos.sub,0)}</b></div>
@@ -6060,6 +6358,14 @@ function go(page,keepVault){
   if(page==='trade'){S.series=series(S.mkt.id,S.mkt.px,S.tf);setMode(S.mode)}
   if(page==='portfolio')renderPortfolio();
   if(page==='preipo'&&!keepVault)renderVaults();
+  // Chain-backed vaults refresh in the background and re-render only if
+  // something actually moved, so the page paints immediately off cached data
+  // rather than waiting on RPC.
+  if(page==='preipo')syncChainVaults({fresh:true}).then(changed=>{
+    if(!changed||S.page!=='preipo')return;
+    S.vault?openVault(S.vault.id):renderVaults();
+    renderPortfolio();
+  });
   if(page==='agents'&&!S.agent){$('agentList').style.display='block';
     $('agentDetail').style.display='none';renderAgents()}
   if(page==='settings')renderSettings();
@@ -6160,7 +6466,8 @@ $('avatar').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go
 $('themeBtn').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme',d?'light':'dark');
   go(S.page,!!S.vault);if(S.page==='trade'&&S.mode==='adv')loadTV()};
-/* wallet connection — demo state only, no chain calls are made */
+/* wallet connection — a real Solana wallet when marco-chain.js is present,
+   otherwise a labelled simulation so the page still demonstrates the flow */
 const DEMO_WALLET='0x71a3…4d02';
 function renderWallet(){
   const b=$('walletBtn');if(!b)return;
@@ -6169,10 +6476,29 @@ function renderWallet(){
   b.setAttribute('aria-label',S.wallet?('Wallet connected, '+S.wallet):'Connect wallet');
   b.setAttribute('aria-pressed',String(!!S.wallet));
 }
-$('walletBtn').onclick=()=>{
-  S.wallet=S.wallet?null:DEMO_WALLET;
-  renderWallet();
-  toast(S.wallet?`Wallet connected · ${S.wallet}`:'Wallet disconnected');
+$('walletBtn').onclick=async()=>{
+  if(S.wallet){
+    await disconnectWallet();
+    S.wallet=null;S.walletKind=null;
+    renderWallet();go(S.page,!!S.vault);
+    return toast('Wallet disconnected');
+  }
+  try{
+    const w=await connectWallet();
+    S.wallet=w.short;S.walletKind=w.kind;
+    renderWallet();go(S.page,!!S.vault);
+    // Naming the burner explicitly matters: a key in localStorage must never
+    // be mistaken for the user's real wallet.
+    toast(w.kind==='dev'
+      ?`Dev wallet · ${w.short} — burner key, localnet only`
+      :`Wallet connected · ${w.short}`);
+  }catch(e){
+    // No chain bundle is the ordinary case for a single-file page. Fall back
+    // to the simulation rather than dead-ending, but say which one this is.
+    S.wallet=DEMO_WALLET;S.walletKind='simulated';
+    renderWallet();go(S.page,!!S.vault);
+    toast(`Simulated wallet · ${DEMO_WALLET} — ${e.message}`);
+  }
 };
 renderWallet();
 addEventListener('keydown',e=>{
@@ -6375,12 +6701,12 @@ function findings(a){
   }else{
     VAULTS.filter(v=>v.status==='open'||v.status==='soon')
       .sort((x,y)=>subPct(y)-subPct(x)).slice(0,5).forEach((v,i)=>{
-        const p=subPct(v),over=isOver(v);
-        out.push({v,tag:over?'Oversubscribed':'Subscription',
-          sev:over?'high':p>70?'med':'low',
+        const p=subPct(v),full=gtdRoom(v)<=.005;
+        out.push({v,tag:full?'Fully subscribed':'Subscription',
+          sev:full?'high':p>70?'med':'low',
           t:`${v.name} is ${p.toFixed(0)}% subscribed`,
-          d:over?`Demand is ${compact(v.raisedUsd-v.vaultSize)} above the guaranteed cap; the excess is best efforts only.`
-            :`${compact(gtdRoom(v))} of guaranteed room left`+(v.close?`, closing ${cdShort(v.close)}`:'')+'.',
+          d:full?'The cap is reached; subscription is closed.'
+            :`${compact(gtdRoom(v))} of room left`+(v.close?`, closing ${cdShort(v.close)}`:'')+'.',
           mins:mins(i)});
       });
   }
@@ -6707,7 +7033,7 @@ function renderSettings(){
         <div class="setCardH">Costs</div>
         ${sRow('Spread','0.15%','Applied to the mid price on every fill')}
         ${sRow('Protocol fee','0.25%','Spot trades')}
-        ${sRow('Vault fee','5.00%','Taken upfront on a vault deposit')}
+        ${sRow('Vault fee','5.00%','Of your subscription, settled at settlement')}
       </div>
     </div></section>
 
@@ -6820,6 +7146,498 @@ window.__marco={S,MARKETS,VAULTS,openVault,openMarket,go,loadTV,showFallback,ren
   s.onload=function(){var m=window.__marco;if(m&&m.S.page==='trade'&&m.S.mode==='adv')m.loadTV()};
   s.onerror=function(){var m=window.__marco;if(m&&m.S.page==='trade'&&m.S.mode==='adv')m.showFallback()};
   document.head.appendChild(s);
+})();
+</script>
+<script>
+/* ════════ demo director — dormant unless the page is opened with ?demo=1 ════════
+   A scripted, self-playing product tour: markets and the configurable board,
+   the discover table, watchlist, the standard and advanced trade views, a live
+   pre-IPO subscription and appearance. It drives the real UI through
+   window.__marco and real click events, so what the video shows is the product,
+   not a mock — the order and the subscription genuinely execute. Nothing here
+   runs, and nothing is injected into the DOM, on a normal page load.
+
+   ?demo=1            play the tour
+   ?demo=1&caps=0     play it with the on-screen captions suppressed
+   ?demo=1&cursor=0   play it without the synthetic cursor
+   ?demo=1&zoom=1.10  raise the app's --z UI scale, so the interface still
+                      reads when the video is watched small
+
+   window.__demo.marks holds { t, label } for every beat once the tour has run,
+   which is what the voiceover timings in demo/VOICEOVER.md are cut against. */
+(function(){
+'use strict';
+const Q=new URLSearchParams(location.search);
+if(Q.get('demo')!=='1')return;
+const CAPS=Q.get('caps')!=='0', CURSOR=Q.get('cursor')!=='0';
+const ZOOM=parseFloat(Q.get('zoom'));
+if(ZOOM>0)document.documentElement.style.setProperty('--z',ZOOM);
+
+/* ── overlay chrome ── */
+const css=`
+.dmo-layer{position:fixed;inset:0;z-index:900;pointer-events:none;font-family:var(--sans)}
+.dmo-vig{position:absolute;inset:0;opacity:0;transition:opacity 600ms ease;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,0,0,.42) 100%)}
+.dmo-vig.on{opacity:1}
+
+.dmo-cur{position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;
+  border-radius:50%;opacity:0;transition:opacity 320ms ease;
+  background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.95) 0 22%,rgba(255,255,255,.30) 23% 46%,transparent 47%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.35),0 6px 22px rgba(0,0,0,.55)}
+.dmo-cur.on{opacity:1}
+.dmo-ring{position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;
+  border-radius:50%;border:1.5px solid rgba(255,255,255,.9);opacity:0}
+.dmo-ring.go{animation:dmoRing 520ms cubic-bezier(.22,.9,.3,1)}
+@keyframes dmoRing{
+  0%{opacity:.95;transform:scale(.55)}
+  100%{opacity:0;transform:scale(3.1)}}
+
+.dmo-cap{position:absolute;left:0;right:0;bottom:0;padding:130px 0 56px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:linear-gradient(to top,rgba(8,8,10,.92) 0%,rgba(8,8,10,.62) 38%,transparent 100%);
+  opacity:0;transition:opacity 420ms ease,padding-bottom 360ms cubic-bezier(.22,.9,.3,1)}
+.dmo-cap.on{opacity:1}
+/* lifted clear of the app's toast (bottom:28px) and of the positions table
+   under it, which is the thing that beat is asking you to look at */
+.dmo-cap.hi{padding-bottom:250px;
+  background:linear-gradient(to top,transparent 0%,rgba(8,8,10,.55) 14%,
+    rgba(8,8,10,.88) 24%,rgba(8,8,10,.55) 52%,transparent 100%)}
+
+.dmo-capT{font-size:34px;font-weight:600;letter-spacing:-.02em;color:#F5F5F7;
+  text-align:center;max-width:60vw;line-height:1.15;
+  transform:translateY(10px);transition:transform 420ms cubic-bezier(.22,.9,.3,1)}
+.dmo-cap.on .dmo-capT{transform:none}
+.dmo-capS{font-size:17px;color:var(--ink-2);text-align:center;max-width:52vw;
+  transform:translateY(10px);transition:transform 460ms cubic-bezier(.22,.9,.3,1) 40ms}
+.dmo-cap.on .dmo-capS{transform:none}
+
+/* No backdrop-filter here on purpose: it forces a compositing layer that comes
+   back black in headless capture, which is exactly where this gets recorded. */
+.dmo-card{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;
+  background:linear-gradient(180deg,#0E0F12 0%,#08080A 100%);
+  opacity:0;transition:opacity 700ms ease}
+.dmo-card.on{opacity:1}
+.dmo-mark{width:78px;height:78px;border-radius:22px;display:grid;place-items:center;
+  background:#F5F5F7;color:#08080A;font-size:42px;font-weight:700;line-height:1;
+  margin-bottom:8px;transform:scale(.9);transition:transform 800ms cubic-bezier(.22,.9,.3,1)}
+.dmo-card.on .dmo-mark{transform:none}
+.dmo-cardT{font-size:62px;font-weight:700;letter-spacing:-.035em;color:#F5F5F7;line-height:1;
+  opacity:0;transform:translateY(14px);transition:all 760ms cubic-bezier(.22,.9,.3,1) 90ms}
+.dmo-cardS{font-size:24px;color:var(--ink-2);letter-spacing:-.01em;text-align:center;max-width:56vw;
+  line-height:1.35;
+  opacity:0;transform:translateY(14px);transition:all 760ms cubic-bezier(.22,.9,.3,1) 190ms}
+.dmo-cardF{position:absolute;bottom:56px;font-size:13px;color:var(--mute);
+  text-align:center;max-width:52vw;line-height:1.5;
+  opacity:0;transition:opacity 700ms ease 420ms}
+.dmo-card.on .dmo-cardT,.dmo-card.on .dmo-cardS{opacity:1;transform:none}
+.dmo-card.on .dmo-cardF{opacity:1}`;
+
+const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+
+const L=document.createElement('div');L.className='dmo-layer';
+L.innerHTML=`<div class="dmo-vig" id="dmoVig"></div>
+<div class="dmo-cap" id="dmoCap"><div class="dmo-capT" id="dmoCapT"></div>
+  <div class="dmo-capS" id="dmoCapS"></div></div>
+<div class="dmo-ring" id="dmoRing"></div>
+<div class="dmo-cur" id="dmoCur"></div>
+<div class="dmo-card" id="dmoCard"><div class="dmo-mark">M</div>
+  <div class="dmo-cardT" id="dmoCardT"></div>
+  <div class="dmo-cardS" id="dmoCardS"></div>
+  <div class="dmo-cardF" id="dmoCardF"></div></div>`;
+document.body.appendChild(L);
+
+const D=id=>document.getElementById(id);
+const cur=D('dmoCur'),ring=D('dmoRing'),cap=D('dmoCap'),card=D('dmoCard');
+
+/* ── timing primitives ── */
+const T0=performance.now();
+const marks=[];
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;   /* easeInOutCubic */
+function mark(label){
+  const t=Math.round(performance.now()-T0);
+  marks.push({t,label});
+  console.log('[demo] '+String(t/1000).padStart(6,' ')+'s  '+label);
+}
+function tween(ms,step){
+  return new Promise(done=>{
+    const s=performance.now();
+    (function frame(now){
+      const p=Math.min(1,(now-s)/ms);
+      step(ease(p));
+      p<1?requestAnimationFrame(frame):done();
+    })(s);
+  });
+}
+
+/* ── cursor ── */
+let cx=innerWidth*.5, cy=innerHeight*.62;
+function place(x,y){cx=x;cy=y;
+  cur.style.transform=ring.style.transform=`translate(${x}px,${y}px)`}
+place(cx,cy);
+async function moveTo(x,y,ms){
+  if(!CURSOR)  {cx=x;cy=y;return}
+  cur.classList.add('on');
+  const x0=cx,y0=cy;
+  await tween(ms,p=>place(x0+(x-x0)*p, y0+(y-y0)*p));
+}
+function ripple(){
+  if(!CURSOR)return;
+  ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');
+}
+const box=el=>el.getBoundingClientRect();
+const mid=el=>{const r=box(el);return [r.left+r.width/2, r.top+r.height/2]};
+
+/* Move onto a control the way a hand would, then actually click it. The app is
+   wired with .onclick handlers, so a plain el.click() is a real interaction.
+   Anything off screen is scrolled to first, so the cursor is never seen
+   clicking somewhere the viewer cannot see. */
+async function tap(el,{travel=620,settle=340}={}){
+  if(!el)return;
+  await ensureVisible(el);
+  const [x,y]=mid(el);
+  await moveTo(x,y,travel);
+  await wait(120);ripple();el.click();
+  await wait(settle);
+}
+async function ensureVisible(el,ms=800){
+  const r=box(el);
+  if(r.bottom>90&&r.top<innerHeight-90)return;   /* already on screen */
+  await scrollTween(scrollY+r.top-innerHeight*0.4,ms);
+}
+
+/* ── captions ── */
+/* hi: sit the caption above the app's toast, for beats where both are on screen */
+async function say(t,s,{lead=260,hi=false}={}){
+  if(!CAPS)return;
+  if(cap.classList.contains('on')){cap.classList.remove('on');await wait(360)}
+  D('dmoCapT').textContent=t;
+  D('dmoCapS').textContent=s||'';
+  D('dmoCapS').style.display=s?'':'none';
+  cap.classList.toggle('hi',hi);
+  await wait(60);cap.classList.add('on');await wait(lead);
+}
+async function sayOff(){if(!CAPS)return;cap.classList.remove('on');await wait(380)}
+
+async function titleCard(t,s,f,{hold=2600,fade=820}={}){
+  D('dmoCardT').textContent=t;
+  D('dmoCardS').textContent=s||'';
+  D('dmoCardF').textContent=f||'';
+  card.classList.add('on');
+  await wait(hold);
+  card.classList.remove('on');
+  await wait(fade);
+}
+
+/* ── scrolling ── */
+function scrollTween(to,ms){
+  const from=scrollY, max=document.body.scrollHeight-innerHeight;
+  const y=Math.max(0,Math.min(to,max));
+  return tween(ms,p=>scrollTo(0,from+(y-from)*p));
+}
+async function scrollToEl(el,ms=1400,off=140){
+  if(!el)return;
+  await scrollTween(scrollY+box(el).top-off,ms);
+}
+
+/* ── app handles ── */
+const M=()=>window.__marco;
+const $=id=>document.getElementById(id);
+const nav=page=>document.querySelector(`.rbtn[data-nav="${page}"]`);
+
+/* Type into a real input and fire the handler the app listens for. The clear
+   fires an event of its own — typeIn(el,'') is how the tour empties a field,
+   and without it the app never learns the field went blank. */
+async function typeIn(el,text,per=68){
+  if(!el)return;
+  el.focus();el.value='';
+  el.dispatchEvent(new Event('input',{bubbles:true}));
+  for(const ch of text){
+    el.value+=ch;
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+    await wait(per);
+  }
+}
+
+/* Select a vault detail tab, bring its section up, and caption it. */
+async function vaultTab(key,t,s,hold=2200,hi=false){
+  await tap(document.querySelector(`#vnav [data-s="${key}"]`),{travel:700,settle:600});
+  await scrollToEl(document.getElementById('s-'+key),1000,140);
+  await say(t,s,{hi});
+  await wait(hold);
+  await sayOff();
+}
+
+/* Walk the buy-size slider up to a percentage — the app derives the amount,
+   the fill price and the fee from it, so every number on screen stays real. */
+async function slide(pct,ms=1100){
+  const r=$('rng');if(!r)return;
+  const from=+r.value||0;
+  const rr=box(r), y=rr.top+rr.height/2;
+  const at=v=>rr.left+12+(rr.width-24)*(v/100);
+  await moveTo(at(from),y,520);
+  await tween(ms,p=>{
+    const v=from+(pct-from)*p;
+    r.value=v;r.dispatchEvent(new Event('input',{bubbles:true}));
+    place(at(v),y);
+  });
+  await wait(260);
+}
+
+/* ════════ the tour ════════ */
+async function run(){
+  /* Give the first price tick and the opening chart draw time to land, so the
+     video never opens on a half-painted screen. */
+  await wait(900);
+  const m=M();
+  if(!m){console.warn('[demo] app never booted');return}
+
+  m.go('markets');scrollTo(0,0);
+  D('dmoVig').classList.add('on');
+
+  /* ── 1 · cold open ── */
+  mark('cold open');
+  await titleCard('Marco','Stablecoin-native Asian Stocks + Pre-IPO Trading Platform',
+    'Settlement on Solana · custody by licensed Hong Kong brokers',{hold:3200});
+
+  /* ── 2 · markets ── */
+  mark('markets');
+  await say('Asian equities, quoted in stablecoin','Listed names and crypto, side by side');
+  await wait(2800);
+  await sayOff();
+
+  await say('Live pricing throughout','The tape, the chart and the pulse all tick');
+  await scrollTween(560,2200);
+  await wait(2000);
+  await sayOff();
+
+  await say('A market board you assemble yourself','Breadth, sector strength, return distribution, market weight');
+  await scrollTween(1180,2100);
+  await wait(2400);
+  await sayOff();
+
+  /* ── 2a · discover: filter and search ── */
+  mark('discover');
+  const disc=document.querySelector('[data-wg="table"]');
+  await scrollToEl(disc,1700,90);
+  await say('Filter the book by sector');
+  await tap(document.querySelector('#catPills [data-c="ai"]'),{travel:700,settle:1500});
+  await wait(1300);
+  await tap(document.querySelector('#catPills [data-c="all"]'),{travel:520,settle:900});
+  await sayOff();
+
+  /* "mi" narrows to MiniMax, SMIC and Xiaomi — the search matches name and
+     symbol only, so a sector word like "semi" would come back empty. */
+  await say('Or search it');
+  await typeIn($('mktSearch'),'mi',150);
+  await wait(2400);
+  await typeIn($('mktSearch'),'');
+  await wait(700);
+  await sayOff();
+
+  /* ── 2b · watchlist ── */
+  mark('watchlist');
+  await say('Pin what you follow','The star on any row adds it to the watchlist');
+  await tap(document.querySelector('#mktBody [data-w="smic"]'),{travel:760,settle:1100});
+  await tap(document.querySelector('#mktBody [data-w="cxmt"]'),{travel:520,settle:1100});
+  await sayOff();
+  await scrollTween(0,1100);
+  await tap($('wlBtn'),{travel:820,settle:1600});
+  await say('It follows you across the app');
+  await wait(2300);
+  await sayOff();
+  await tap($('wlBtn'),{travel:400,settle:900});
+
+  /* ── 2c · layouts and edit mode ── */
+  mark('layouts');
+  await say('The board is yours','Start from a template, or build your own');
+  await tap($('layoutBtn'),{travel:900,settle:1500});
+  await tap(document.querySelector('#ltmGrid .ltCard[data-ly="compact"]'),{travel:640,settle:1800});
+  await sayOff();
+  await say('Compact — the pulse, the chart, the book');
+  await wait(2200);
+  await sayOff();
+
+  await tap($('layoutBtn'),{travel:760,settle:1200});
+  await tap(document.querySelector('#ltmGrid .ltCard[data-ly="trading"]'),{travel:600,settle:1700});
+  await say('Or Stock Trading, with price action up front');
+  await wait(2400);
+  await sayOff();
+
+  await tap($('editBtn'),{travel:820,settle:1400});
+  await say('Edit to drag capsules on and off the board');
+  await wait(2600);
+  await sayOff();
+  await tap(document.querySelector('#wPalette #wDone'),{travel:700,settle:900});
+  await tap($('layoutBtn'),{travel:700,settle:1100});
+  await tap(document.querySelector('#ltmGrid .ltCard[data-ly="overview"]'),{travel:600,settle:1400});
+  await scrollTween(0,900);
+
+  /* ── 3 · trade ── */
+  mark('trade');
+  await tap(nav('trade'),{travel:820,settle:900});
+  scrollTo(0,0);
+  await say('Trade with the stablecoin you already hold');
+  await wait(1500);
+  await sayOff();
+
+  /* Open the picker and hold on it — the list of fourteen names with live
+     prices is the point of the shot — then take Zhipu AI. */
+  await tap($('pickBtn'),{travel:640,settle:1700});
+  await say('Every market, with its last price and 24h move');
+  await wait(1600);
+  await tap(document.querySelector('#pickList [data-p="zhipu"]'),{travel:820,settle:1200});
+  await sayOff();
+
+  /* chart timeframes */
+  await say('Timeframes from the session out to five years');
+  await tap(document.querySelector('#tfs [data-tf="1M"]'),{travel:820,settle:1500});
+  await tap(document.querySelector('#tfs [data-tf="1Y"]'),{travel:560,settle:1600});
+  await tap(document.querySelector('#tfs [data-tf="1D"]'),{travel:560,settle:1300});
+  await sayOff();
+
+  /* the ticket, in detail */
+  mark('ticket');
+  await say('Size it, and the cost is on screen before you sign','Fill price, spread, fee and total, quoted up front');
+  await slide(25,1400);
+  await wait(3000);          /* hold on the filled-out ticket: fill, spread, fee, total */
+  await sayOff();
+
+  await tap($('cta'),{travel:520,settle:1100});
+  mark('order filled');
+  await say('Filled','Position, cost basis and P&L update on the spot',{hi:true});
+  await wait(2600);
+  await sayOff();
+
+  /* the rest of the standard view */
+  await say('Live order book, and the case for the company','Depth either side of the mid, plus filings and news');
+  await scrollTween(720,2100);
+  await wait(3000);
+  await sayOff();
+  await scrollTween(0,1000);
+
+  /* ── 4 · advanced ── */
+  mark('advanced');
+  await tap(document.querySelector('#stdHero .modeBtn[data-mode="adv"]'),{travel:760,settle:1700});
+  await say('One click to the full terminal','Candles, depth and the whole book');
+  await wait(2600);
+  await sayOff();
+
+  await say('Any interval, minutes to months',null,{hi:true});
+  await tap($('intBtn'),{travel:820,settle:1400});
+  await tap(document.querySelector('#intMenu [data-int="15"]'),{travel:560,settle:1600});
+  await sayOff();
+
+  await say('Holdings','Everything you hold, marked live',{hi:true});
+  await tap(document.querySelector('.utab[data-tab="holdings"]'),{travel:820,settle:1400});
+  await wait(2200);
+  await sayOff();
+
+  await say('Order history','Every fill, including the one from a moment ago',{hi:true});
+  await tap(document.querySelector('.utab[data-tab="history"]'),{travel:600,settle:1400});
+  await wait(2800);
+  await sayOff();
+
+  await say('And a screener across the whole universe',null,{hi:true});
+  await tap(document.querySelector('.utab[data-tab="screener"]'),{travel:600,settle:1500});
+  await wait(2800);
+  await sayOff();
+
+  m.setMode('std');
+  await wait(800);
+
+  /* ── 5 · pre-IPO ── the part the whole platform is really for ── */
+  mark('pre-ipo');
+  await tap(nav('preipo'),{travel:860,settle:1100});
+  scrollTo(0,0);
+  await say('Pre-IPO vaults','Subscribe to a company before it lists');
+  await wait(2700);
+  await sayOff();
+
+  await say('Every offering in one place','Valuation, status, how much is subscribed, when it closes');
+  await scrollTween(680,2000);
+  await wait(2400);
+  await sayOff();
+
+  /* Choose the vault to walk through at run time. The seed data moves — a
+     vault that is open with room this month can be full the next — and a
+     hardcoded id turns the subscribe beat into a "fully subscribed" toast
+     without anything else in the tour looking wrong. Take the open vault with
+     the most room left. */
+  const vault=m.VAULTS
+    .filter(v=>v.status==='open'&&v.vaultSize-v.raisedUsd>1000)
+    .sort((a,b)=>(b.vaultSize-b.raisedUsd)-(a.vaultSize-a.raisedUsd))[0];
+  if(!vault){console.warn('[demo] no open vault has room — subscribe beat will be skipped')}
+  const target=vault||m.VAULTS[0];
+
+  mark('vault detail');
+  await tap(document.querySelector(`#vgrid [data-v="${target.id}"]`),{travel:760,settle:1500});
+  scrollTo(0,0);
+  await say('Each vault gets its own page','Valuation, size, subscription level, and the closing clock');
+  await wait(3000);
+  await sayOff();
+
+  await scrollTween(640,1900);
+  await say('Benchmarked against comparable companies');
+  await wait(2700);
+  await sayOff();
+
+  /* Left to right, in the order the tabs actually sit on the page — jumping
+     around reads as a mistake even when every stop is worth showing. */
+  await vaultTab('timeline','Lifecycle','Subscription, allocation, listing, redemption');
+  /* lifted so the caption does not sit on top of the addresses it cites */
+  await vaultTab('terms','The full terms',
+    'Instrument, redemption basis, fees, and the on-chain vault addresses',2600,true);
+  await vaultTab('financials','Financials','Revenue, gross profit and margin, with the sources stated');
+  await vaultTab('outlook','Listing scenarios','What a vault token is worth at each outcome');
+  await vaultTab('risk','Payoff and risk factors','Stated plainly, before you commit');
+  await vaultTab('news','News','Coverage on the company',1900);
+  await vaultTab('activity','Activity','Inflows by day, and what has been committed',1900);
+
+  /* The subscribe panel is sticky, so there is no need to leave the tab you
+     are on — just come back up to it. Size the ticket against the room that is
+     actually left, so the deposit clears instead of being capped to nothing. */
+  if(vault){
+    mark('subscribe');
+    await scrollTween(0,1100);
+    const room=vault.vaultSize-vault.raisedUsd;
+    const amt=Math.max(100,Math.min(25000,Math.floor(room*.4/1000)*1000));
+    await say('Subscribe in USDC','Entry fee and vault tokens quoted before you commit');
+    await typeIn($('bAmt'),String(amt),95);
+    await wait(2400);
+    await sayOff();
+
+    /* short settle so the caption lands while the fill toast is still up —
+       the toast clears itself 3.2s after the click */
+    await tap($('bCta'),{travel:600,settle:1100});
+    mark('subscribed');
+    await say('Committed','Your position and vault tokens update on the spot',{hi:true});
+    await wait(2800);
+    await sayOff();
+  }
+
+  await tap(document.querySelector('#vnav [data-s="position"]'),{travel:760,settle:800});
+  await scrollToEl(document.getElementById('s-position'),1200,150);
+  await say('Vault tokens redeem on net IPO proceeds','Not on the listed share price');
+  await wait(3200);
+  await sayOff();
+
+  /* ── 6 · close ── the mark is the way back out of a vault ── */
+  mark('close');
+  await tap($('homeBtn'),{travel:900,settle:1700});
+  await titleCard('Marco','Stablecoin-native Asian Stocks + Pre-IPO Trading Platform',
+    'Trading carries substantial risk and you may lose your capital. Not financial advice. ' +
+    'Vault tokens are not equity — they redeem on net IPO proceeds.',
+    {hold:4200,fade:900});
+
+  mark('end');
+  document.documentElement.setAttribute('data-demo-done','1');
+  console.log('[demo] finished in '+((performance.now()-T0)/1000).toFixed(1)+'s');
+}
+
+window.__demo={run,marks,say,tap,titleCard,scrollTween};
+addEventListener('load',()=>setTimeout(run,400));
 })();
 </script>
 </body>
